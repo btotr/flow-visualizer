@@ -1,0 +1,131 @@
+#commands {
+	visibility:hidden;
+}
+
+#commands.active {
+	visibility:visible;
+}
+
+.node rect {
+     fill:#E2E2E2;
+     stroke:#78CFE4;
+     stroke-width:3;
+}
+
+.node text {
+    font-family:Gotham-Medium; 
+    font-size:12px;
+    letter-spacing:2px;
+    text-anchor:middle;
+    dominant-baseline:central;
+    fill:#0A7693;
+}
+
+.node rect:hover,
+.node text:hover {
+	cursor:pointer;
+}
+
+line.connection {
+    fill:#E2E2E2;
+    stroke:#78CFE4;
+    stroke-width:3;
+}
+
+#start.endpoint line.connection {
+	visibility:hidden;
+}
+
+circle.start {
+    fill:#E2E2E2;
+}
+
+circle.start:hover {
+    cursor:pointer;
+}
+
+circle.end:hover {
+    cursor:pointer;
+}
+
+circle.end {
+    fill:#E2E2E2;
+    stroke:#78CFE4;
+    stroke-width:3;
+	visibility:hidden;
+}
+
+.endpoint circle.end {
+	visibility:visible;
+}
+
+dl {
+	border:solid 3px #78CFE4;
+	font-family:helvetica;
+	padding:10px;
+	border-radius:10px;
+	width:500px;
+	height:300px;
+	overflow:auto;
+}
+
+dd {
+	margin-left:4px;
+	color:#bbb;
+}
+dt, dd {
+	float:left;
+	
+}
+
+ul dt, ul dd {
+	float:none;
+}
+
+dt + dd + dd + dt {
+	clear:left;
+}
+
+ul.arguments {
+	display:none;
+	list-style-type:none;
+}
+
+ul.arguments.active {
+	display:block;
+  	cursor:pointer;
+}
+
+ul.arguments li {
+	font-family:helvetica;
+	padding:4px;
+	margin-bottom:2px;
+	border-bottom:solid 1px gray;
+	
+}
+
+ul.arguments li:hover {
+	background-color:#78CFE4;
+}
+
+ul.arguments li:hover .description {
+	color:white;
+}
+
+ul.arguments .name {
+	display:block;
+	width:100%;
+}
+
+ul.arguments .description {
+		display:block;
+	width:100%;
+	color:#CCC;
+
+}
+
+
+
+dl dd + dd:active ul.arguments {
+	display:inline-block;
+}

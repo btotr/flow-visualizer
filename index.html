@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>flow visualizer</title>
+        <script>
+            var parser = new DOMParser();
+            var xsltProcessor = new XSLTProcessor();
+         
+            function loadXMLDoc(filename){
+                var  xhttp = new XMLHttpRequest();
+                xhttp.open("GET", filename, false);
+                xhttp.send();
+                var response = xhttp.responseXML ;
+                if (!response) response = parser.parseFromString(xhttp.responseText, "application/xml");
+                console.log(response)
+                return response;
+            }
+            
+            function convert(recipeURL){
+                var xml = loadXMLDoc(recipeURL);
+                var xsl = loadXMLDoc("flow-rdf2svg.xsl");
+                xsltProcessor.importStylesheet(xsl);
+                var resultDocument = xsltProcessor.transformToFragment(xml, document);
+                document.getElementById("flow-card").appendChild(resultDocument);
+            }
+            
+            window.onload = function(){
+                console.log("convert") ;
+                convert("hummus.rdf")
+            }
+        </script>
+    </head>
+    <body>
+        <h1>flow visualizer</h1>
+        <div id="flow-card"></div>
+    </body>
+</html>
