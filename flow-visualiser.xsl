@@ -14,7 +14,6 @@
 		doctype-public="-//W3C//DTD SVG 1.1//EN" 
 		indent="yes" />
 		
-
 	<xsl:template match="/rdf:RDF">
 		<xsl:processing-instruction name="xml-stylesheet">
 			href="stylesheets/screen.css" 
