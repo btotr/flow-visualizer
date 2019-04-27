@@ -18,12 +18,12 @@
 
 	<xsl:variable name="header">
 			<script type="application/ecmascript" xlink:href="scripts/controller.js"/>
-			<defs>  
-		        <g id="node" class="node">
-		            <circle class="end" cx="120" cy="14" r="10">
-		                <set attributeName="fill" to="#78CFE4;" begin="mousedown" end="mouseup" dur="indefinite" />
-		            </circle>
-		        </g>
+			<defs>
+				<g>
+			    	<rect id="process" rx="15" ry="15">
+				       	<set attributeName="fill" to="red" begin="mousedown" end="mouseup" dur="4s" />
+			    	</rect>
+				</g>
 		    </defs>
 	</xsl:variable>	
 
@@ -33,13 +33,14 @@
 			type="text/css"
 		</xsl:processing-instruction>		
 		
-		<svg version="1.1" x="0" y="0" width="100%" height="100%" onload="new Controller()">
+		<svg version="1.1" x="0" y="0" width="100%" height="100%" onload="new Controller()" viewBox="0.0 0.0 560 400">
 			<xsl:copy-of select="$header" />
 		    <xsl:if test="owl:NamedIndividual[not(rdf:type/@rdf:resource='http://flow.recipes/ns/core#Instruction')]">
 				<text id="recipeName"><xsl:value-of select="owl:NamedIndividual/rdfs:label"/></text>
 			</xsl:if>
 			<xsl:call-template name="instruction">
     			<xsl:with-param name="instruction" select="owl:NamedIndividual[rdf:type/@rdf:resource='http://flow.recipes/ns/core#Instruction' and not(core:depVariationInstruction)][1]" />
+				<xsl:with-param name="x" select="0" />
     		</xsl:call-template>
 		</svg>
 	</xsl:template>
@@ -47,32 +48,38 @@
 	
 	<xsl:template name="instruction">
 		<xsl:param name="instruction" />
-		<g>
-			<!-- should use label -->
-			<text><xsl:value-of select="substring-after($instruction/core:hasMethod/@rdf:resource, '#')" /></text>
+		<xsl:param name="x" />
+		<xsl:element name="g" >
+    		<xsl:attribute name="style">transform: translate(<xsl:value-of select="$x" />px, 100px);</xsl:attribute>
+    		<xsl:attribute name="class">instruction</xsl:attribute>
+			<use xlink:href="#process" />
+			<text class="method"><xsl:value-of select="substring-after($instruction/core:hasMethod/@rdf:resource, '#')" /></text>
 			<xsl:for-each select="$instruction/core:hasComponentUnit/rdf:Description">
 				<xsl:call-template name="componentUnit">
 		    		<xsl:with-param name="componentUnit" select="self::node()" />
 		    	</xsl:call-template>
 	    	</xsl:for-each>
 	    	<xsl:if test="$instruction/core:directions">
-				<text><xsl:value-of select="$instruction/core:directions/text()" /></text>
+				<text class="direction"><xsl:value-of select="$instruction/core:directions/text()" /></text>
 			</xsl:if>
-			<xsl:variable name="current" select="$instruction/@rdf:about" />
-			<text><xsl:value-of select="$current" /></text>
-				<!-- xslt recursion :-) -->
-				<xsl:if test="//owl:NamedIndividual[core:depVariationInstruction/@rdf:resource=$current]">
-				<xsl:call-template name="instruction">
-	    			<xsl:with-param name="instruction" select="//owl:NamedIndividual[core:depVariationInstruction/@rdf:resource=$current]" />
-	    		</xsl:call-template> 
-    		</xsl:if>
 
-		</g>
+		</xsl:element>
+		<xsl:variable name="current" select="$instruction/@rdf:about" />
+		<!-- xslt recursion :-) -->
+		<xsl:if test="//owl:NamedIndividual[core:depVariationInstruction/@rdf:resource=$current]">
+			<xsl:call-template name="instruction">
+	    		<xsl:with-param name="instruction" select="//owl:NamedIndividual[core:depVariationInstruction/@rdf:resource=$current]" />
+	    		<xsl:with-param name="x" select="$x + 100" />
+	    	</xsl:call-template> 
+    	</xsl:if>
 	</xsl:template>
 	    		
 	<xsl:template name="componentUnit">
 		<xsl:param name="componentUnit" />
-		<g>
+
+		<xsl:element name="g">
+			<xsl:attribute name="transform">translate(0, <xsl:value-of select="100" />px)</xsl:attribute>
+			<xsl:attribute name="class">componentUnit</xsl:attribute>
 			<xsl:if test="$componentUnit/core:weight">
 				<text><xsl:value-of select="$componentUnit/core:weight/text()" /></text>
 			</xsl:if>
@@ -80,6 +87,6 @@
 			<xsl:if test="$componentUnit/core:componentAddition">
 				<text>(<xsl:value-of select="$componentUnit/core:componentAddition/text()" />)</text>
 			</xsl:if>
-		</g>
+		</xsl:element>
 	</xsl:template>
 </xsl:stylesheet>
