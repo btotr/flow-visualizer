@@ -20,16 +20,24 @@ text {
 .instruction .direction { 
 	width: 80px;
 	font-size: 10px;
-	transform: translate(10px, 20px);
+	transform: translate(10px, 30px);
 }
 
 .instruction .direction { 
 	transform: translate(10px, 100px);
 }
 
-.componentUnit {
-	fill: red; 
-	width: 200px; 
+#components {
+	fill: FloralWhite; 
+	width: 80px; 
 	height:50px;
-	visibility: hidden;
+	stroke: LightGray;
+  	stroke-width: 1;
+}
+
+.componentUnit {
+	width: 200px; 
+	height:400px;
+	font-size: 8px;
+	
 }
