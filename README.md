@@ -9,7 +9,7 @@
 4. open the file in a xslt aware webbrowser (tested with Google Chrome)
 
 ## example sparql construct
-'''
+```
 CONSTRUCT {
 #  recipe	
 	?recipeInstance a core:Recipe ;
@@ -57,4 +57,4 @@ WHERE {
 	BIND( IRI(CONCAT("risotto:",STR(NOW()), "-", ?method)) AS ?instruction)
 	BIND( IRI(CONCAT("risotto:",STR(NOW()))) AS ?recipeInstance)
 }
-'''
+```
