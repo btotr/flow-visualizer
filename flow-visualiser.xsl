@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<xsl:stylesheet version="1.0" 
+<xsl:stylesheet version="1.0"
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
 	xmlns="http://www.w3.org/2000/svg" 
 	xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -17,7 +17,7 @@
 
 
 	<xsl:variable name="header">
-			<script type="application/ecmascript" xlink:href="scripts/controller.js"/>
+			<script type="application/ecmascript" xlink:href="http://flow.recipes/flow-visualizer/scripts/controller.js"/>
 			<defs>
 				<g>
 			    	<rect id="process" rx="15" ry="15">
@@ -29,7 +29,7 @@
 
 	<xsl:template match="/rdf:RDF">
 		<xsl:processing-instruction name="xml-stylesheet">
-			href="stylesheets/screen.css" 
+			href="http://flow.recipes/flow-visualizer/stylesheets/screen.css" 
 			type="text/css"
 		</xsl:processing-instruction>		
 		
