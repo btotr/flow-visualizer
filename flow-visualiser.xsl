@@ -3,13 +3,13 @@
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
 	xmlns="http://www.w3.org/2000/svg" 
 	xmlns:xlink="http://www.w3.org/1999/xlink"
-	xmlns:core="http://flow.recipes/ns/core#"
+	xmlns:core="https://flow.recipes/ns/core#"
 	xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
 	xmlns:owl="http://www.w3.org/2002/07/owl#"
 	xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
 	xmlns:schema="http://schema.org/"
 	xmlns:skos="http://www.w3.org/2004/02/skos/core#"
-	xmlns:viz="http://flow.recipes/ns/flow-visualiser#">
+	xmlns:viz="https://flow.recipes/ns/flow-visualiser#">
 	
 	<xsl:output method="xml" 
 		doctype-system="http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd" 
@@ -17,7 +17,7 @@
 		indent="yes" />
 
 	<xsl:variable name="header">
-			<script type="application/ecmascript" xlink:href="http://flow.recipes/flow-visualizer/scripts/controller.js"/>
+			<script type="application/ecmascript" xlink:href="https://flow.recipes/flow-visualizer/scripts/controller.js"/>
 			<defs>
 				<g>
 			    	<rect id="process" rx="15" ry="15">
@@ -34,18 +34,18 @@
 
 	<xsl:template match="/rdf:RDF">
 		<xsl:processing-instruction name="xml-stylesheet">
-			href="http://flow.recipes/flow-visualizer/stylesheets/screen.css" 
+			href="https://flow.recipes/flow-visualizer/stylesheets/screen.css" 
 			type="text/css"
 		</xsl:processing-instruction>		
 		
 		<svg version="1.1" x="0" y="0" width="100%" height="100%" onload="new Controller()" viewBox="0.0 0.0 560 400">
 			<xsl:copy-of select="$header" />
-		    <xsl:if test="owl:NamedIndividual[not(rdf:type/@rdf:resource='http://flow.recipes/ns/core#Instruction')]">
+		    <xsl:if test="owl:NamedIndividual[not(rdf:type/@rdf:resource='https://flow.recipes/ns/core#Instruction')]">
 				<text id="recipeName"><xsl:value-of select="owl:NamedIndividual/rdfs:label"/></text>
 			</xsl:if>
 			<xsl:call-template name="instruction">
 				<!-- find a instruction without dependency which must be the first. -->
-    			<xsl:with-param name="instruction" select="rdf:Description[rdf:type/@rdf:resource='http://flow.recipes/ns/core#Instruction' and not(core:depVariationInstruction)][1]" />
+    			<xsl:with-param name="instruction" select="rdf:Description[rdf:type/@rdf:resource='https://flow.recipes/ns/core#Instruction' and not(core:depVariationInstruction)][1]" />
 				<xsl:with-param name="x" select="0" />
     		</xsl:call-template>
 		</svg>
