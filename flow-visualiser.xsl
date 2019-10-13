@@ -55,7 +55,7 @@
 		<xsl:param name="instruction" />
 		<xsl:param name="x" />
 		<g>
-			<xsl:attribute name="style">transform: translate(<xsl:value-of select="$x" />px, -10px)</xsl:attribute>
+			<xsl:attribute name="style">transform: translate(<xsl:value-of select="$x" />px, 10px)</xsl:attribute>
 			<use xlink:href="#components" />
 			<xsl:variable name="iriComponentUnit" select="$instruction/core:hasComponentUnit/@rdf:nodeID" />
 			<xsl:for-each select="$iriComponentUnit">
