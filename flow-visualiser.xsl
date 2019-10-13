@@ -8,7 +8,7 @@
 	xmlns:owl="http://www.w3.org/2002/07/owl#"
 	xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
 	xmlns:schema="http://schema.org/"
-	xmlns:skos="http://www.w3.org/2004/02/skos/core#"
+	xmlns:skos="http://www.w3.org/2008/05/skos#"
 	xmlns:viz="https://flow.recipes/ns/flow-visualiser#">
 	
 	<xsl:output method="xml" 
