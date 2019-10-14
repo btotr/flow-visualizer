@@ -53,7 +53,10 @@
 
 	<xsl:template name="instruction">
 		<xsl:param name="instruction" />
+		<xsl:param name="depIRIBase" />
 		<xsl:param name="x" />
+		<xsl:variable name="currentInstruction" select="$instruction/@rdf:about" />
+		<xsl:message>Current instruction: <xsl:value-of select="$currentInstruction" /></xsl:message>
 		<g>
 			<xsl:attribute name="style">transform: translate(<xsl:value-of select="$x" />px, 10px)</xsl:attribute>
 			<use xlink:href="#components" />
@@ -76,14 +79,25 @@
 			<text class="direction"><xsl:value-of select="$instruction/core:directions/text()" /></text>
 		</xsl:if>
 
-
 		<!-- xslt recursion :-) -->
-		<xsl:variable name="currentInstruction" select="$instruction/@rdf:about" />
-		<xsl:if test="//rdf:Description[core:depVariationInstruction/@rdf:resource=$currentInstruction]">
-			<xsl:call-template name="instruction">
-	    		<xsl:with-param name="instruction" select="//rdf:Description[core:depVariationInstruction/@rdf:resource=$currentInstruction]" />
-	    		<xsl:with-param name="x" select="$x + 100" />
-	    	</xsl:call-template> 
+		<xsl:variable name="depIRI" select="//rdf:Description[core:depVariationInstruction/@rdf:resource=$currentInstruction]/@rdf:about" />
+		<xsl:variable name="variationIRI" select="//rdf:Description[core:variation/@rdf:resource=$depIRI]/@rdf:about" />
+		<xsl:if test="$depIRI or $depIRIBase">
+			<xsl:choose>
+				<xsl:when test="$variationIRI">
+					<xsl:call-template name="instruction">
+			    		<xsl:with-param name="instruction" select="//rdf:Description[core:variation]" />
+			    		<xsl:with-param name="x" select="$x + 100" />
+			    		<xsl:with-param name="depIRIBase" select="$depIRI" />
+			    	</xsl:call-template> 
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:call-template name="instruction">
+			    		<xsl:with-param name="instruction" select="//rdf:Description[(core:depVariationInstruction/@rdf:resource=$depIRIBase) or (core:depVariationInstruction/@rdf:resource=$currentInstruction)]" />
+			    		<xsl:with-param name="x" select="$x + 100" />
+			    	</xsl:call-template> 
+		    	</xsl:otherwise>
+	    	</xsl:choose>
     	</xsl:if>
 	</xsl:template>
 	 	    		
