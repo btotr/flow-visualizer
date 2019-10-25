@@ -30,14 +30,16 @@
 			    	</rect>
 				</g>
 		    </defs>
-	</xsl:variable>	
+	</xsl:variable>
 
 	<xsl:template match="/rdf:RDF">
+
+		
 		<xsl:processing-instruction name="xml-stylesheet">
 			href="https://flow.recipes/flow-visualizer/stylesheets/screen.css" 
 			type="text/css"
-		</xsl:processing-instruction>		
-		
+		</xsl:processing-instruction>
+
 		<svg version="1.1" x="0" y="0" width="100%" height="100%" onload="new Controller()" viewBox="0.0 0.0 560 400">
 			<xsl:copy-of select="$header" />
 		    <xsl:if test="owl:NamedIndividual[not(rdf:type/@rdf:resource='https://flow.recipes/ns/core#Instruction')]">
@@ -50,6 +52,7 @@
     		</xsl:call-template>
 		</svg>
 	</xsl:template>
+	
 
 	<xsl:template name="instruction">
 		<xsl:param name="instruction" />
@@ -59,10 +62,12 @@
 		<xsl:message>Current instruction: <xsl:value-of select="$currentInstruction" /></xsl:message>
 		<g>
 			<xsl:attribute name="style">transform: translate(<xsl:value-of select="$x" />px, 10px)</xsl:attribute>
-			<use xlink:href="#components" />
 			<xsl:variable name="iriComponentUnit" select="$instruction/core:hasComponentUnit/@rdf:nodeID" />
 			<xsl:for-each select="$iriComponentUnit">
 				<xsl:variable name="pos" select="position()" />
+				<xsl:if test="pos = 0">
+					<use xlink:href="#components" />
+				</xsl:if>
 				<xsl:call-template name="componentUnit">
 			   		<xsl:with-param name="componentUnit" select="//rdf:Description[@rdf:nodeID=$iriComponentUnit][$pos]" />
 			   		<xsl:with-param name="x" select="$x" />
@@ -152,5 +157,7 @@
 		      </xsl:otherwise>
 		    </xsl:choose>
 	</xsl:template>
+	
+
 	
 </xsl:stylesheet>
