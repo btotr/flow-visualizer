@@ -1,3 +1,9 @@
+svg {
+	background-color: gray;
+	width:148mm; 
+	height:105mm; 
+}
+
 text {
 	fill: DimGray;
 	font-size: 10px;
@@ -30,7 +36,7 @@ text {
 line {
 	stroke: LightGray;
 	stroke-linecap:butt;
-	stroke-with:1px;
+	stroke-width:1px;
 }
 
 #components {

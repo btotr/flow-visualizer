@@ -31,16 +31,33 @@
 				</g>
 		    </defs>
 	</xsl:variable>
+	
+	<!-- method width -->
+	<xsl:variable name="mw" select="200" /> 
+	 <!-- method height -->
+	<xsl:variable name="mh" select="100" />
+	<!-- components width -->
+	<xsl:variable name="cw" select="$mw" />
+	<!-- components height -->
+	<xsl:variable name="ch" select="100" />	
+		<!-- components space -->
+	<xsl:variable name="cs" select="30" />
+	<!-- component unit space -->
+	<xsl:variable name="cus" select="100" />
+	<!-- instruction space -->
+	<xsl:variable name="is" select="20" />
+	
+	
 
 	<xsl:template match="/rdf:RDF">
 
 		
 		<xsl:processing-instruction name="xml-stylesheet">
-			href="https://flow.recipes/flow-visualizer/stylesheets/screen.css" 
+			href="flow-visualizer/stylesheets/screen.css" 
 			type="text/css"
 		</xsl:processing-instruction>
 
-		<svg version="1.1" x="0" y="0" width="100%" height="100%" onload="new Controller()" viewBox="0.0 0.0 560 400">
+		<svg version="1.1" onload="new Controller()">
 			<xsl:copy-of select="$header" />
 		    <xsl:if test="owl:NamedIndividual[not(rdf:type/@rdf:resource='https://flow.recipes/ns/core#Instruction')]">
 				<text id="recipeName"><xsl:value-of select="owl:NamedIndividual/rdfs:label"/></text>
@@ -65,13 +82,13 @@
 			<xsl:variable name="iriComponentUnit" select="$instruction/core:hasComponentUnit/@rdf:nodeID" />
 			<xsl:for-each select="$iriComponentUnit">
 				<xsl:variable name="pos" select="position()" />
-				<xsl:if test="pos = 0">
+				<xsl:if test="$pos = '1'">
 					<use xlink:href="#components" />
 					<xsl:element name="line">
-						<xsl:attribute name="x1"><xsl:value-of select="0" />px</xsl:attribute>
-						<xsl:attribute name="x2"><xsl:value-of select="0" />px</xsl:attribute>
-						<xsl:attribute name="y1"><xsl:value-of select="100" />px</xsl:attribute>
-						<xsl:attribute name="y2"><xsl:value-of select="20" />px</xsl:attribute>
+						<xsl:attribute name="x1"><xsl:value-of select="$cw div 4 - ($is div 2)" />px</xsl:attribute>
+						<xsl:attribute name="x2"><xsl:value-of select="$cw div 4 - ($is div 2 )" />px</xsl:attribute>
+						<xsl:attribute name="y1"><xsl:value-of select="$ch div 2" />px</xsl:attribute>
+						<xsl:attribute name="y2"><xsl:value-of select="$ch+$cs" />px</xsl:attribute>
 					</xsl:element>
 				</xsl:if>
 				<xsl:call-template name="componentUnit">
@@ -116,7 +133,7 @@
 		<xsl:param name="method" />
 		<xsl:param name="x" />
 		<xsl:element name="g">
-			<xsl:attribute name="style">transform: translate(<xsl:value-of select="$x" />px, 100px)</xsl:attribute>
+			<xsl:attribute name="style">transform: translate(<xsl:value-of select="$x" />px, <xsl:value-of select="$ch+$cs" />px)</xsl:attribute>
     		<xsl:attribute name="class">instruction</xsl:attribute>
 			<use xlink:href="#process" />
 			<text class="method">
@@ -130,10 +147,10 @@
 			    </xsl:choose>
 			</text>
 			<xsl:element name="line">
-				<xsl:attribute name="x1"><xsl:value-of select="-100" />px</xsl:attribute>
+				<xsl:attribute name="x1"><xsl:value-of select="-($is)" />px</xsl:attribute>
 				<xsl:attribute name="x2"><xsl:value-of select="0" />px</xsl:attribute>
-				<xsl:attribute name="y1"><xsl:value-of select="50" />px</xsl:attribute>
-				<xsl:attribute name="y2"><xsl:value-of select="50" />px</xsl:attribute>
+				<xsl:attribute name="y1"><xsl:value-of select="$ch div 4" />px</xsl:attribute>
+				<xsl:attribute name="y2"><xsl:value-of select="$ch div 4" />px</xsl:attribute>
 			</xsl:element>
 		</xsl:element>
 	</xsl:template>
@@ -146,14 +163,14 @@
 			<xsl:attribute name="style">transform: translate(2px, <xsl:value-of select="$y*8" />px)</xsl:attribute>
 			<xsl:attribute name="class">componentUnit</xsl:attribute>
 			<xsl:if test="$componentUnit/core:weight">
-				<xsl:value-of select="$componentUnit/core:weight/text()" />&emsp;
+				<xsl:value-of select="$componentUnit/core:weight/text()" />&#xA0;
 			</xsl:if>
 			<xsl:variable name="iriComponent" select="$componentUnit/core:hasComponent/@rdf:resource" />
 			<xsl:call-template name="component">
 		   		<xsl:with-param name="component" select="//rdf:Description[@rdf:about=$iriComponent]" />
 		   	</xsl:call-template>
 			<xsl:if test="$componentUnit/core:componentAddition">
-				&emsp;(<xsl:value-of select="$componentUnit/core:componentAddition/text()" />)
+				&#xA0;(<xsl:value-of select="$componentUnit/core:componentAddition/text()" />)
 			</xsl:if>
 		</xsl:element>
 	</xsl:template>
