@@ -134,14 +134,14 @@
 			<xsl:attribute name="style">transform: translate(2px, <xsl:value-of select="$y*8" />px)</xsl:attribute>
 			<xsl:attribute name="class">componentUnit</xsl:attribute>
 			<xsl:if test="$componentUnit/core:weight">
-				<xsl:value-of select="$componentUnit/core:weight/text()" />&#xA0;
+				<xsl:value-of select="$componentUnit/core:weight/text()" />&emsp;
 			</xsl:if>
 			<xsl:variable name="iriComponent" select="$componentUnit/core:hasComponent/@rdf:resource" />
 			<xsl:call-template name="component">
 		   		<xsl:with-param name="component" select="//rdf:Description[@rdf:about=$iriComponent]" />
 		   	</xsl:call-template>
 			<xsl:if test="$componentUnit/core:componentAddition">
-				&#xA0;(<xsl:value-of select="$componentUnit/core:componentAddition/text()" />)
+				&emsp;(<xsl:value-of select="$componentUnit/core:componentAddition/text()" />)
 			</xsl:if>
 		</xsl:element>
 	</xsl:template>
