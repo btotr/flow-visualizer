@@ -67,6 +67,12 @@
 				<xsl:variable name="pos" select="position()" />
 				<xsl:if test="pos = 0">
 					<use xlink:href="#components" />
+					<xsl:element name="line">
+						<xsl:attribute name="x1"><xsl:value-of select="0" />px</xsl:attribute>
+						<xsl:attribute name="x2"><xsl:value-of select="0" />px</xsl:attribute>
+						<xsl:attribute name="y1"><xsl:value-of select="100" />px</xsl:attribute>
+						<xsl:attribute name="y2"><xsl:value-of select="20" />px</xsl:attribute>
+					</xsl:element>
 				</xsl:if>
 				<xsl:call-template name="componentUnit">
 			   		<xsl:with-param name="componentUnit" select="//rdf:Description[@rdf:nodeID=$iriComponentUnit][$pos]" />
@@ -123,6 +129,12 @@
 			      </xsl:otherwise>
 			    </xsl:choose>
 			</text>
+			<xsl:element name="line">
+				<xsl:attribute name="x1"><xsl:value-of select="-100" />px</xsl:attribute>
+				<xsl:attribute name="x2"><xsl:value-of select="0" />px</xsl:attribute>
+				<xsl:attribute name="y1"><xsl:value-of select="50" />px</xsl:attribute>
+				<xsl:attribute name="y2"><xsl:value-of select="50" />px</xsl:attribute>
+			</xsl:element>
 		</xsl:element>
 	</xsl:template>
 	    		

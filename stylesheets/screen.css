@@ -27,6 +27,12 @@ text {
 	transform: translate(10px, 100px);
 }
 
+line {
+	stroke: LightGray;
+	stroke-linecap:butt;
+	stroke-with:1px;
+}
+
 #components {
 	fill: FloralWhite; 
 	width: 80px; 
