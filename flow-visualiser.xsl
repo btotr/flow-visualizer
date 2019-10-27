@@ -17,46 +17,41 @@
 		indent="yes" />
 		
 		
-		<!-- method width -->
+	<!-- method width -->
 	<xsl:variable name="mw" select="80" /> 
 	 <!-- method height -->
 	<xsl:variable name="mh" select="30" />
 	<!-- components width -->
-	<xsl:variable name="cw" select="$mw" />
+	<xsl:variable name="cw" select="90" />
 	<!-- components height -->
 	<xsl:variable name="ch" select="50" />	
-		<!-- components space -->
+	<!-- components space -->
 	<xsl:variable name="cs" select="40" />
-	<!-- component unit space -->
-	<xsl:variable name="cus" select="100" />
-	<!-- instruction space -->
+	<!-- instruction width -->
+	<xsl:variable name="iw" select="100" />
+	<!-- instruction start x -->
+	<xsl:variable name="ix" select="50" />	
+		<!-- instruction start y -->
+	<xsl:variable name="iy" select="20" />	
+		<!-- instruction space -->
 	<xsl:variable name="is" select="20" />	
 
 	<xsl:variable name="header">
-			<script type="application/ecmascript" xlink:href="https://flow.recipes/flow-visualizer/scripts/controller.js"/>
+			<script type="application/ecmascript" xlink:href="../flow-visualizer/scripts/controller.js"/>
 			<defs>
-				<g>
-			    	<rect id="process" rx="10" ry="10" width="{$mw}" height="{$mh}">
-				       	<set attributeName="fill" to="red" begin="mousedown" end="mouseup" dur="4s" />
-			    	</rect>
-				</g>
-				<g>
-			    	<rect id="components" rx="0" ry="0" width="{$cw}" height="{$ch}">
-				       	<set attributeName="fill" to="yellow" begin="mousedown" end="mouseup" dur="4s" />
-			    	</rect>
-				</g>
+		    	<rect id="process" rx="10" ry="10" width="{$mw}" height="{$mh}">
+			       	<set attributeName="fill" to="red" begin="mousedown" end="mouseup" dur="4s" />
+		    	</rect>
+		    	<rect id="components" rx="0" ry="0" width="{$cw}" height="{$ch}">
+			       	<set attributeName="fill" to="yellow" begin="mousedown" end="mouseup" dur="4s" />
+		    	</rect>
 		    </defs>
 	</xsl:variable>
-	
-
-	
-	
 
 	<xsl:template match="/rdf:RDF">
 
-		
 		<xsl:processing-instruction name="xml-stylesheet">
-			href="flow-visualizer/stylesheets/screen.css" 
+			href="../flow-visualizer/stylesheets/screen.css" 
 			type="text/css"
 		</xsl:processing-instruction>
 
@@ -65,10 +60,11 @@
 		    <xsl:if test="owl:NamedIndividual[not(rdf:type/@rdf:resource='https://flow.recipes/ns/core#Instruction')]">
 				<text id="recipeName"><xsl:value-of select="owl:NamedIndividual/rdfs:label"/></text>
 			</xsl:if>
+			<circle cx="{$ix - $is - 10}" cy="{$ch+$cs+($mh div 2 )}" r="10" id="startProcess"/>
 			<xsl:call-template name="instruction">
 				<!-- find a instruction without dependency which must be the first. -->
     			<xsl:with-param name="instruction" select="rdf:Description[rdf:type/@rdf:resource='https://flow.recipes/ns/core#Instruction' and not(core:depVariationInstruction)][1]" />
-				<xsl:with-param name="x" select="0" />
+				<xsl:with-param name="x" select="$ix" />
     		</xsl:call-template>
 		</svg>
 	</xsl:template>
@@ -83,7 +79,7 @@
 		<g>
 			<xsl:attribute name="class">instruction</xsl:attribute>
 			<g>
-				<xsl:attribute name="style">transform: translate(<xsl:value-of select="$x" />px, 10px)</xsl:attribute>
+				<xsl:attribute name="style">transform: translate(<xsl:value-of select="$x" />px, <xsl:value-of select="$iy" />px)</xsl:attribute>
 				<xsl:variable name="iriComponentUnit" select="$instruction/core:hasComponentUnit/@rdf:nodeID" />
 				<xsl:for-each select="$iriComponentUnit">
 					<xsl:variable name="pos" select="position()" />
@@ -116,23 +112,39 @@
 		<!-- xslt recursion :-) -->
 		<xsl:variable name="depIRI" select="//rdf:Description[core:depVariationInstruction/@rdf:resource=$currentInstruction]/@rdf:about" />
 		<xsl:variable name="variationIRI" select="//rdf:Description[core:variation/@rdf:resource=$depIRI]/@rdf:about" />
-		<xsl:if test="$depIRI or $depIRIBase">
-			<xsl:choose>
-				<xsl:when test="$variationIRI">
-					<xsl:call-template name="instruction">
-			    		<xsl:with-param name="instruction" select="//rdf:Description[core:variation]" />
-			    		<xsl:with-param name="x" select="$x + 100" />
-			    		<xsl:with-param name="depIRIBase" select="$depIRI" />
-			    	</xsl:call-template> 
-				</xsl:when>
-				<xsl:otherwise>
-					<xsl:call-template name="instruction">
-			    		<xsl:with-param name="instruction" select="//rdf:Description[(core:depVariationInstruction/@rdf:resource=$depIRIBase) or (core:depVariationInstruction/@rdf:resource=$currentInstruction)]" />
-			    		<xsl:with-param name="x" select="$x + 100" />
-			    	</xsl:call-template> 
-		    	</xsl:otherwise>
-	    	</xsl:choose>
-    	</xsl:if>
+		<xsl:choose>
+			<xsl:when test="$depIRI or $depIRIBase">
+				<xsl:choose>
+					<xsl:when test="$variationIRI">
+						<xsl:call-template name="instruction">
+				    		<xsl:with-param name="instruction" select="//rdf:Description[core:variation]" />
+				    		<xsl:with-param name="x" select="$x + $iw" />
+				    		<xsl:with-param name="depIRIBase" select="$depIRI" />
+				    	</xsl:call-template> 
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:call-template name="instruction">
+				    		<xsl:with-param name="instruction" select="//rdf:Description[(core:depVariationInstruction/@rdf:resource=$depIRIBase) or (core:depVariationInstruction/@rdf:resource=$currentInstruction)]" />
+				    		<xsl:with-param name="x" select="$x + $iw" />
+				    	</xsl:call-template> 
+			    	</xsl:otherwise>
+		    	</xsl:choose>
+	    	</xsl:when>
+	    	<xsl:otherwise>
+	    		<xsl:variable name="ex" select="$x+$mw+$is+10" />
+				<xsl:variable name="ey" select="$ch+$cs+($mh div 2 )" />
+	    		<xsl:element name="line">
+					<xsl:attribute name="x1"><xsl:value-of select="$x+$mw" />px</xsl:attribute>
+					<xsl:attribute name="x2"><xsl:value-of select="$ex" />px</xsl:attribute>
+					<xsl:attribute name="y1"><xsl:value-of select="$ey" />px</xsl:attribute>
+					<xsl:attribute name="y2"><xsl:value-of select="$ey" />px</xsl:attribute>
+				</xsl:element>
+				<g id="endProcess">
+					<circle cx="{$ex}" cy="{$ey}" r="10" />
+					<circle cx="{$ex}" cy="{$ey}" r="7" style="stroke:white; stroke-width:2px;"/>
+				</g>
+		   	</xsl:otherwise>
+	   	</xsl:choose>
 	</xsl:template>
 	 	    		
 	<xsl:template name="method">
@@ -170,17 +182,19 @@
 		<xsl:param name="y" />
 		<xsl:param name="x" />
 		<xsl:element name="text">
-			<xsl:attribute name="style">transform: translate(2px, <xsl:value-of select="$y*8" />px)</xsl:attribute>
+			<xsl:attribute name="style">transform: translate(2px, <xsl:value-of select="$y*8" />px);</xsl:attribute>
 			<xsl:attribute name="class">componentUnit</xsl:attribute>
 			<xsl:if test="$componentUnit/core:weight">
 				<tspan class="weight"><xsl:value-of select="$componentUnit/core:weight/text()" /></tspan>
 			</xsl:if>
-			<xsl:variable name="iriComponent" select="$componentUnit/core:hasComponent/@rdf:resource" />
-			<xsl:call-template name="component">
-		   		<xsl:with-param name="component" select="//rdf:Description[@rdf:about=$iriComponent]" />
-		   	</xsl:call-template>
+			<tspan class="ingredient">
+				<xsl:variable name="iriComponent" select="$componentUnit/core:hasComponent/@rdf:resource" />
+				<xsl:call-template name="component">
+			   		<xsl:with-param name="component" select="//rdf:Description[@rdf:about=$iriComponent]" />
+			   	</xsl:call-template>
+		   	</tspan>
 			<xsl:if test="$componentUnit/core:componentAddition">
-			<tspan class="addition">(<xsl:value-of select="$componentUnit/core:componentAddition/text()" />)</tspan>
+				<tspan class="addition">(<xsl:value-of select="$componentUnit/core:componentAddition/text()" />)</tspan>
 			</xsl:if>
 		</xsl:element>
 	</xsl:template>
