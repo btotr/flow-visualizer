@@ -42,7 +42,7 @@
 		    	<rect id="process" rx="10" ry="10" width="{$mw}" height="{$mh}">
 			       	<set attributeName="fill" to="red" begin="mousedown" end="mouseup" dur="4s" />
 		    	</rect>
-		    	<rect id="components" rx="0" ry="0" width="{$cw}" height="{$ch}">
+		    	<rect id="components" rx="0" ry="0" x="{-(($cw - $mw) div 2 )}" width="{$cw}" height="{$ch}">
 			       	<set attributeName="fill" to="yellow" begin="mousedown" end="mouseup" dur="4s" />
 		    	</rect>
 		    </defs>
@@ -87,8 +87,8 @@
 						<use xlink:href="#components" />
 						<xsl:element name="line">
 							<xsl:attribute name="class">processConnection</xsl:attribute>
-							<xsl:attribute name="x1"><xsl:value-of select="$cw div 2" />px</xsl:attribute>
-							<xsl:attribute name="x2"><xsl:value-of select="$cw div 2" />px</xsl:attribute>
+							<xsl:attribute name="x1"><xsl:value-of select="$cw div 2 - (($cw - $mw) div 2 )" />px</xsl:attribute>
+							<xsl:attribute name="x2"><xsl:value-of select="$cw div 2 - (($cw - $mw) div 2 )" />px</xsl:attribute>
 							<xsl:attribute name="y1"><xsl:value-of select="$ch" />px</xsl:attribute>
 							<xsl:attribute name="y2"><xsl:value-of select="$ch+$cs" />px</xsl:attribute>
 						</xsl:element>
@@ -152,7 +152,6 @@
 		<xsl:param name="x" />
 		<xsl:element name="g">
 			<xsl:attribute name="style">transform: translate(<xsl:value-of select="$x" />px, <xsl:value-of select="$ch+$cs" />px)</xsl:attribute>
-    		
 			<use xlink:href="#process" />
 			<text class="method">
 				<xsl:attribute name="x"><xsl:value-of select="$mw div 2" />px</xsl:attribute>
@@ -182,7 +181,7 @@
 		<xsl:param name="y" />
 		<xsl:param name="x" />
 		<xsl:element name="text">
-			<xsl:attribute name="style">transform: translate(2px, <xsl:value-of select="$y*8" />px);</xsl:attribute>
+			<xsl:attribute name="style">transform: translate(2px, <xsl:value-of select="$y*8+2" />px);</xsl:attribute>
 			<xsl:attribute name="class">componentUnit</xsl:attribute>
 			<xsl:if test="$componentUnit/core:weight">
 				<tspan class="weight"><xsl:value-of select="$componentUnit/core:weight/text()" /></tspan>
