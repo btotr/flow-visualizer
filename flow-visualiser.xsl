@@ -143,8 +143,10 @@
     		
 			<use xlink:href="#process" />
 			<text class="method">
-				<xsl:attribute name="x"><xsl:value-of select="$is" />px</xsl:attribute>
+				<xsl:attribute name="x"><xsl:value-of select="$mw div 2" />px</xsl:attribute>
+				<xsl:attribute name="y"><xsl:value-of select="$mh div 2" />px</xsl:attribute>
 				<xsl:attribute name="text-anchor">middle</xsl:attribute>	
+				<xsl:attribute name="alignment-baseline">central</xsl:attribute>	
 				<xsl:choose>
 			      <xsl:when test="$method/skos:prefLabel">
 			        <xsl:value-of select="$method/skos:prefLabel/text()" />
