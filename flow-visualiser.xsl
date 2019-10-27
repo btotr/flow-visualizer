@@ -15,37 +15,40 @@
 		doctype-system="http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd" 
 		doctype-public="-//W3C//DTD SVG 1.1//EN" 
 		indent="yes" />
+		
+		
+		<!-- method width -->
+	<xsl:variable name="mw" select="80" /> 
+	 <!-- method height -->
+	<xsl:variable name="mh" select="30" />
+	<!-- components width -->
+	<xsl:variable name="cw" select="$mw" />
+	<!-- components height -->
+	<xsl:variable name="ch" select="50" />	
+		<!-- components space -->
+	<xsl:variable name="cs" select="40" />
+	<!-- component unit space -->
+	<xsl:variable name="cus" select="100" />
+	<!-- instruction space -->
+	<xsl:variable name="is" select="20" />	
 
 	<xsl:variable name="header">
 			<script type="application/ecmascript" xlink:href="https://flow.recipes/flow-visualizer/scripts/controller.js"/>
 			<defs>
 				<g>
-			    	<rect id="process" rx="15" ry="15">
+			    	<rect id="process" rx="10" ry="10" width="{$mw}" height="{$mh}">
 				       	<set attributeName="fill" to="red" begin="mousedown" end="mouseup" dur="4s" />
 			    	</rect>
 				</g>
 				<g>
-			    	<rect id="components" rx="5" ry="5">
+			    	<rect id="components" rx="0" ry="0" width="{$cw}" height="{$ch}">
 				       	<set attributeName="fill" to="yellow" begin="mousedown" end="mouseup" dur="4s" />
 			    	</rect>
 				</g>
 		    </defs>
 	</xsl:variable>
 	
-	<!-- method width -->
-	<xsl:variable name="mw" select="200" /> 
-	 <!-- method height -->
-	<xsl:variable name="mh" select="100" />
-	<!-- components width -->
-	<xsl:variable name="cw" select="$mw" />
-	<!-- components height -->
-	<xsl:variable name="ch" select="100" />	
-		<!-- components space -->
-	<xsl:variable name="cs" select="30" />
-	<!-- component unit space -->
-	<xsl:variable name="cus" select="100" />
-	<!-- instruction space -->
-	<xsl:variable name="is" select="20" />
+
 	
 	
 
@@ -78,35 +81,38 @@
 		<xsl:variable name="currentInstruction" select="$instruction/@rdf:about" />
 		<xsl:message>Current instruction: <xsl:value-of select="$currentInstruction" /></xsl:message>
 		<g>
-			<xsl:attribute name="style">transform: translate(<xsl:value-of select="$x" />px, 10px)</xsl:attribute>
-			<xsl:variable name="iriComponentUnit" select="$instruction/core:hasComponentUnit/@rdf:nodeID" />
-			<xsl:for-each select="$iriComponentUnit">
-				<xsl:variable name="pos" select="position()" />
-				<xsl:if test="$pos = '1'">
-					<use xlink:href="#components" />
-					<xsl:element name="line">
-						<xsl:attribute name="x1"><xsl:value-of select="$cw div 4 - ($is div 2)" />px</xsl:attribute>
-						<xsl:attribute name="x2"><xsl:value-of select="$cw div 4 - ($is div 2 )" />px</xsl:attribute>
-						<xsl:attribute name="y1"><xsl:value-of select="$ch div 2" />px</xsl:attribute>
-						<xsl:attribute name="y2"><xsl:value-of select="$ch+$cs" />px</xsl:attribute>
-					</xsl:element>
-				</xsl:if>
-				<xsl:call-template name="componentUnit">
-			   		<xsl:with-param name="componentUnit" select="//rdf:Description[@rdf:nodeID=$iriComponentUnit][$pos]" />
-			   		<xsl:with-param name="x" select="$x" />
-			   		<xsl:with-param name="y" select="position()" />
-			   	</xsl:call-template>
-		   	</xsl:for-each>
-	   	</g>
-		<xsl:variable name="iriMethod" select="$instruction/core:hasMethod/@rdf:resource" />
-		<xsl:call-template name="method">
-			<xsl:with-param name="method" select="//rdf:Description[@rdf:about=$iriMethod]" />
-			<xsl:with-param name="x" select="$x" />
-		</xsl:call-template>
-    	<xsl:if test="$instruction/core:directions">
-			<text class="direction"><xsl:value-of select="$instruction/core:directions/text()" /></text>
-		</xsl:if>
-
+			<xsl:attribute name="class">instruction</xsl:attribute>
+			<g>
+				<xsl:attribute name="style">transform: translate(<xsl:value-of select="$x" />px, 10px)</xsl:attribute>
+				<xsl:variable name="iriComponentUnit" select="$instruction/core:hasComponentUnit/@rdf:nodeID" />
+				<xsl:for-each select="$iriComponentUnit">
+					<xsl:variable name="pos" select="position()" />
+					<xsl:if test="$pos = '1'">
+						<use xlink:href="#components" />
+						<xsl:element name="line">
+							<xsl:attribute name="class">processConnection</xsl:attribute>
+							<xsl:attribute name="x1"><xsl:value-of select="$cw div 2" />px</xsl:attribute>
+							<xsl:attribute name="x2"><xsl:value-of select="$cw div 2" />px</xsl:attribute>
+							<xsl:attribute name="y1"><xsl:value-of select="$ch" />px</xsl:attribute>
+							<xsl:attribute name="y2"><xsl:value-of select="$ch+$cs" />px</xsl:attribute>
+						</xsl:element>
+					</xsl:if>
+					<xsl:call-template name="componentUnit">
+				   		<xsl:with-param name="componentUnit" select="//rdf:Description[@rdf:nodeID=$iriComponentUnit][$pos]" />
+				   		<xsl:with-param name="x" select="$x" />
+				   		<xsl:with-param name="y" select="position()" />
+				   	</xsl:call-template>
+			   	</xsl:for-each>
+	   		</g>
+			<xsl:variable name="iriMethod" select="$instruction/core:hasMethod/@rdf:resource" />
+			<xsl:call-template name="method">
+				<xsl:with-param name="method" select="//rdf:Description[@rdf:about=$iriMethod]" />
+				<xsl:with-param name="x" select="$x" />
+			</xsl:call-template>
+	    	<xsl:if test="$instruction/core:directions">
+				<text class="direction"><xsl:value-of select="$instruction/core:directions/text()" /></text>
+			</xsl:if>
+		</g>
 		<!-- xslt recursion :-) -->
 		<xsl:variable name="depIRI" select="//rdf:Description[core:depVariationInstruction/@rdf:resource=$currentInstruction]/@rdf:about" />
 		<xsl:variable name="variationIRI" select="//rdf:Description[core:variation/@rdf:resource=$depIRI]/@rdf:about" />
@@ -134,9 +140,11 @@
 		<xsl:param name="x" />
 		<xsl:element name="g">
 			<xsl:attribute name="style">transform: translate(<xsl:value-of select="$x" />px, <xsl:value-of select="$ch+$cs" />px)</xsl:attribute>
-    		<xsl:attribute name="class">instruction</xsl:attribute>
+    		
 			<use xlink:href="#process" />
 			<text class="method">
+				<xsl:attribute name="x"><xsl:value-of select="$is" />px</xsl:attribute>
+				<xsl:attribute name="text-anchor">middle</xsl:attribute>	
 				<xsl:choose>
 			      <xsl:when test="$method/skos:prefLabel">
 			        <xsl:value-of select="$method/skos:prefLabel/text()" />
@@ -149,8 +157,8 @@
 			<xsl:element name="line">
 				<xsl:attribute name="x1"><xsl:value-of select="-($is)" />px</xsl:attribute>
 				<xsl:attribute name="x2"><xsl:value-of select="0" />px</xsl:attribute>
-				<xsl:attribute name="y1"><xsl:value-of select="$ch div 4" />px</xsl:attribute>
-				<xsl:attribute name="y2"><xsl:value-of select="$ch div 4" />px</xsl:attribute>
+				<xsl:attribute name="y1"><xsl:value-of select="$mh div 2" />px</xsl:attribute>
+				<xsl:attribute name="y2"><xsl:value-of select="$mh div 2" />px</xsl:attribute>
 			</xsl:element>
 		</xsl:element>
 	</xsl:template>
@@ -163,14 +171,14 @@
 			<xsl:attribute name="style">transform: translate(2px, <xsl:value-of select="$y*8" />px)</xsl:attribute>
 			<xsl:attribute name="class">componentUnit</xsl:attribute>
 			<xsl:if test="$componentUnit/core:weight">
-				<xsl:value-of select="$componentUnit/core:weight/text()" />&#xA0;
+				<tspan class="weight"><xsl:value-of select="$componentUnit/core:weight/text()" /></tspan>
 			</xsl:if>
 			<xsl:variable name="iriComponent" select="$componentUnit/core:hasComponent/@rdf:resource" />
 			<xsl:call-template name="component">
 		   		<xsl:with-param name="component" select="//rdf:Description[@rdf:about=$iriComponent]" />
 		   	</xsl:call-template>
 			<xsl:if test="$componentUnit/core:componentAddition">
-				&#xA0;(<xsl:value-of select="$componentUnit/core:componentAddition/text()" />)
+			<tspan class="addition">(<xsl:value-of select="$componentUnit/core:componentAddition/text()" />)</tspan>
 			</xsl:if>
 		</xsl:element>
 	</xsl:template>
