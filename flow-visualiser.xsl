@@ -42,6 +42,12 @@
 		    	<rect id="process" rx="10" ry="10" width="{$mw}" height="{$mh}">
 			       	<set attributeName="fill" to="red" begin="mousedown" end="mouseup" dur="4s" />
 		    	</rect>
+
+			    <g id="timeProcess" >
+					<polygon points="7.687,0 3.843,3.844 0,0 3.843,0 "/>
+					<polygon  points="0,8.043 3.844,4.199 7.687,8.043 3.844,8.043 "/>
+				</g>
+		    	
 		    	<rect id="components" rx="0" ry="0" x="{-(($cw - $mw) div 2 )}" width="{$cw}" height="{$ch}">
 			       	<set attributeName="fill" to="yellow" begin="mousedown" end="mouseup" dur="4s" />
 		    	</rect>
@@ -103,6 +109,7 @@
 			<xsl:variable name="iriMethod" select="$instruction/core:hasMethod/@rdf:resource" />
 			<xsl:call-template name="method">
 				<xsl:with-param name="method" select="//rdf:Description[@rdf:about=$iriMethod]" />
+				<xsl:with-param name="time" select="$instruction/core:time" />
 				<xsl:with-param name="x" select="$x" />
 			</xsl:call-template>
 	    	<xsl:if test="$instruction/core:directions">
@@ -149,13 +156,41 @@
 	 	    		
 	<xsl:template name="method">
 		<xsl:param name="method" />
+		<xsl:param name="time" />
 		<xsl:param name="x" />
 		<xsl:element name="g">
 			<xsl:attribute name="style">transform: translate(<xsl:value-of select="$x" />px, <xsl:value-of select="$ch+$cs" />px)</xsl:attribute>
-			<use xlink:href="#process" />
+			
+			
+			<xsl:variable name="methodY">
+			  <xsl:choose>
+			    <xsl:when test="$time"><xsl:value-of select="$mh div 2 - 20" /></xsl:when>
+			    <xsl:otherwise><xsl:value-of  select="$mh div 2" /></xsl:otherwise>
+			  </xsl:choose>
+			</xsl:variable>
+
+			<xsl:choose>
+				<xsl:when test="$time">
+					<use x="{$mw div 2 - 7}" y="{$mh div 2 - 7}" xlink:href="#timeProcess" />
+					<xsl:element name="line">
+						<xsl:attribute name="x1"><xsl:value-of select="0" />px</xsl:attribute>
+						<xsl:attribute name="x2"><xsl:value-of select="$mw" />px</xsl:attribute>
+						<xsl:attribute name="y1"><xsl:value-of select="$mh div 2" />px</xsl:attribute>
+						<xsl:attribute name="y2"><xsl:value-of select="$mh div 2" />px</xsl:attribute>
+					</xsl:element>
+					<text class="time" y="35">
+						<xsl:attribute name="text-anchor">middle</xsl:attribute>	
+						<xsl:attribute name="alignment-baseline">central</xsl:attribute>
+						<xsl:attribute name="x"><xsl:value-of select="$mw div 2" />px</xsl:attribute>
+						<xsl:value-of select="$time/text()" />
+					</text>
+				</xsl:when>
+				<xsl:otherwise><use xlink:href="#process" /></xsl:otherwise>
+	    	</xsl:choose>
+	    	
 			<text class="method">
 				<xsl:attribute name="x"><xsl:value-of select="$mw div 2" />px</xsl:attribute>
-				<xsl:attribute name="y"><xsl:value-of select="$mh div 2" />px</xsl:attribute>
+				<xsl:attribute name="y"><xsl:value-of select="$methodY" />px</xsl:attribute>
 				<xsl:attribute name="text-anchor">middle</xsl:attribute>	
 				<xsl:attribute name="alignment-baseline">central</xsl:attribute>	
 				<xsl:choose>

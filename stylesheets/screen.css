@@ -43,6 +43,11 @@ line.processConnection {
 	fill: silver;	
 }
 
+#timeProcess {
+	fill: silver; 
+	transform: scale(1.8);
+}
+
 #components {
 	fill: white; 
 	stroke: LightGray;
