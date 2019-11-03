@@ -71,6 +71,7 @@
 				<!-- find a instruction without dependency which must be the first. -->
     			<xsl:with-param name="instruction" select="rdf:Description[rdf:type/@rdf:resource='https://flow.recipes/ns/core#Instruction' and not(core:depVariationInstruction)][1]" />
 				<xsl:with-param name="x" select="$ix" />
+				<xsl:with-param name="y" select="0" />
     		</xsl:call-template>
 		</svg>
 	</xsl:template>
@@ -80,12 +81,13 @@
 		<xsl:param name="instruction" />
 		<xsl:param name="depIRIBase" />
 		<xsl:param name="x" />
+		<xsl:param name="y" />
 		<xsl:variable name="currentInstruction" select="$instruction/@rdf:about" />
 		<xsl:message>Current instruction: <xsl:value-of select="$currentInstruction" /></xsl:message>
 		<g>
 			<xsl:attribute name="class">instruction</xsl:attribute>
 			<g>
-				<xsl:attribute name="style">transform: translate(<xsl:value-of select="$x" />px, <xsl:value-of select="$iy" />px)</xsl:attribute>
+				<xsl:attribute name="style">transform: translate(<xsl:value-of select="$x" />px, <xsl:value-of select="$iy + $y" />px)</xsl:attribute>
 				<xsl:variable name="iriComponentUnit" select="$instruction/core:hasComponentUnit/@rdf:nodeID" />
 				<xsl:for-each select="$iriComponentUnit">
 					<xsl:variable name="pos" select="position()" />
@@ -111,57 +113,87 @@
 				<xsl:with-param name="method" select="//rdf:Description[@rdf:about=$iriMethod]" />
 				<xsl:with-param name="time" select="$instruction/core:time" />
 				<xsl:with-param name="x" select="$x" />
+				<xsl:with-param name="y" select="$y" />
 			</xsl:call-template>
+			
+			<!-- FIXME: if y > 1 don't draw -->
 	    	<xsl:if test="$instruction/core:directions">
 				<text class="direction"><xsl:value-of select="$instruction/core:directions/text()" /></text>
 			</xsl:if>
 		</g>
-		<!-- xslt recursion :-) -->
 		<xsl:variable name="depIRI" select="//rdf:Description[core:depVariationInstruction/@rdf:resource=$currentInstruction]/@rdf:about" />
 		<xsl:variable name="variationIRI" select="//rdf:Description[core:variation/@rdf:resource=$depIRI]/@rdf:about" />
-		<xsl:choose>
-			<xsl:when test="$depIRI or $depIRIBase">
-				<xsl:choose>
-					<xsl:when test="$variationIRI">
-						<xsl:call-template name="instruction">
-				    		<xsl:with-param name="instruction" select="//rdf:Description[core:variation]" />
-				    		<xsl:with-param name="x" select="$x + $iw" />
-				    		<xsl:with-param name="depIRIBase" select="$depIRI" />
-				    	</xsl:call-template> 
-					</xsl:when>
-					<xsl:otherwise>
-						<xsl:call-template name="instruction">
-				    		<xsl:with-param name="instruction" select="//rdf:Description[(core:depVariationInstruction/@rdf:resource=$depIRIBase) or (core:depVariationInstruction/@rdf:resource=$currentInstruction)]" />
-				    		<xsl:with-param name="x" select="$x + $iw" />
-				    	</xsl:call-template> 
-			    	</xsl:otherwise>
-		    	</xsl:choose>
-	    	</xsl:when>
-	    	<xsl:otherwise>
-	    		<xsl:variable name="ex" select="$x+$mw+$is+10" />
-				<xsl:variable name="ey" select="$ch+$cs+($mh div 2 )" />
-	    		<xsl:element name="line">
-					<xsl:attribute name="x1"><xsl:value-of select="$x+$mw" />px</xsl:attribute>
-					<xsl:attribute name="x2"><xsl:value-of select="$ex" />px</xsl:attribute>
-					<xsl:attribute name="y1"><xsl:value-of select="$ey" />px</xsl:attribute>
-					<xsl:attribute name="y2"><xsl:value-of select="$ey" />px</xsl:attribute>
+		<xsl:for-each select="//rdf:Description[(core:depVariationInstruction/@rdf:resource=$depIRIBase) or (core:depVariationInstruction/@rdf:resource=$currentInstruction)]">
+			<xsl:variable name="pos" select="position()" />
+			
+			<xsl:variable name="nextY">
+			  <xsl:choose>
+			    <xsl:when test="$y &gt; 1 ">0
+					<!--FIXME:  and not(//rdf:Description[(core:depVariationInstruction/@rdf:resource=$depIRIBase) or (core:depVariationInstruction/@rdf:resource=$currentInstruction)][$pos]/@rdf:about = $currentInstruction/@rdf:about) -->
+			    	<!--xsl:value-of select="$y" /-->
+			    </xsl:when>
+			    <xsl:otherwise><xsl:value-of  select="(number($pos)-1) * ($mh+$ch+$cs)" /></xsl:otherwise>
+			  </xsl:choose>
+			</xsl:variable>
+			
+			<xsl:choose>
+				<xsl:when test="$depIRI or $depIRIBase">
+					<xsl:choose>
+						<!-- xslt recursion :-) -->
+						<xsl:when test="$variationIRI">
+							<xsl:call-template name="instruction">
+					    		<xsl:with-param name="instruction" select="//rdf:Description[core:variation]" />
+					    		<xsl:with-param name="x" select="$x + $iw" />
+					    		<xsl:with-param name="depIRIBase" select="$depIRI" />
+					    		<xsl:with-param name="y" select="0" />
+					    	</xsl:call-template> 
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:call-template name="instruction">
+					    		<xsl:with-param name="instruction" select="//rdf:Description[(core:depVariationInstruction/@rdf:resource=$depIRIBase) or (core:depVariationInstruction/@rdf:resource=$currentInstruction)][$pos]" />
+					    		<xsl:with-param name="x" select="$x + $iw" />
+					    		<xsl:with-param name="y" select="$nextY" />
+					    	</xsl:call-template> 
+				    	</xsl:otherwise>
+			    	</xsl:choose>
+		    	</xsl:when>
+		    	<xsl:otherwise>
+		    		<!-- draw end node -->
+		    		<xsl:variable name="ex" select="$x+$mw+$is+10" />
+					<xsl:variable name="ey" select="$ch+$cs+($mh div 2 )" />
+		    		<xsl:element name="line">
+						<xsl:attribute name="x1"><xsl:value-of select="$x+$mw" />px</xsl:attribute>
+						<xsl:attribute name="x2"><xsl:value-of select="$ex" />px</xsl:attribute>
+						<xsl:attribute name="y1"><xsl:value-of select="$ey" />px</xsl:attribute>
+						<xsl:attribute name="y2"><xsl:value-of select="$ey" />px</xsl:attribute>
+					</xsl:element>
+					<g id="endProcess">
+						<circle cx="{$ex}" cy="{$ey}" r="10" />
+						<circle cx="{$ex}" cy="{$ey}" r="7" style="stroke:white; stroke-width:2px;"/>
+					</g>
+			   	</xsl:otherwise>
+		   	</xsl:choose>
+		   	<xsl:if test="$pos &gt; 1">
+		   		<!-- draw fork -->
+				<xsl:element name="line">
+					<xsl:attribute name="class">fork</xsl:attribute>
+					<xsl:attribute name="x1"><xsl:value-of select="$x + ($is div 2) + $mw" />px</xsl:attribute>
+					<xsl:attribute name="x2"><xsl:value-of select="$x + ($is div 2) + $mw" />px</xsl:attribute>
+					<xsl:attribute name="y1"><xsl:value-of select="(number($pos)-1) * ($mh+$ch+$cs) - ($mh div 2)" />px</xsl:attribute>
+					<xsl:attribute name="y2"><xsl:value-of select="number($pos) * ($mh+$ch+$cs) - ($mh div 2)" />px</xsl:attribute>
 				</xsl:element>
-				<g id="endProcess">
-					<circle cx="{$ex}" cy="{$ey}" r="10" />
-					<circle cx="{$ex}" cy="{$ey}" r="7" style="stroke:white; stroke-width:2px;"/>
-				</g>
-		   	</xsl:otherwise>
-	   	</xsl:choose>
+			</xsl:if>
+		</xsl:for-each>
 	</xsl:template>
 	 	    		
 	<xsl:template name="method">
 		<xsl:param name="method" />
 		<xsl:param name="time" />
 		<xsl:param name="x" />
+		<xsl:param name="y" />
 		<xsl:element name="g">
-			<xsl:attribute name="style">transform: translate(<xsl:value-of select="$x" />px, <xsl:value-of select="$ch+$cs" />px)</xsl:attribute>
-			
-			
+			<xsl:attribute name="style">transform: translate(<xsl:value-of select="$x" />px, <xsl:value-of select="$ch+$cs+$y" />px)</xsl:attribute>
+
 			<xsl:variable name="methodY">
 			  <xsl:choose>
 			    <xsl:when test="$time"><xsl:value-of select="$mh div 2 - 20" /></xsl:when>
@@ -202,8 +234,17 @@
 			      </xsl:otherwise>
 			    </xsl:choose>
 			</text>
+			
+			
+			<xsl:variable name="startX">
+			  <xsl:choose>
+			    <xsl:when test="$y &gt; 1"><xsl:value-of select="$is div 2" /></xsl:when>
+			    <xsl:otherwise>0</xsl:otherwise>
+			  </xsl:choose>
+			</xsl:variable>
+			
 			<xsl:element name="line">
-				<xsl:attribute name="x1"><xsl:value-of select="-($is)" />px</xsl:attribute>
+				<xsl:attribute name="x1"><xsl:value-of select="-($is) + $startX" />px</xsl:attribute>
 				<xsl:attribute name="x2"><xsl:value-of select="0" />px</xsl:attribute>
 				<xsl:attribute name="y1"><xsl:value-of select="$mh div 2" />px</xsl:attribute>
 				<xsl:attribute name="y2"><xsl:value-of select="$mh div 2" />px</xsl:attribute>

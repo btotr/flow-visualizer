@@ -78,5 +78,9 @@ line.processConnection {
 
 .ingredient {
 	font-weight: 500;
+}
 
+.fork {
+  	stroke-width: 4px;	
+  	stroke-linecap: round;
 }
