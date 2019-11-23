@@ -115,11 +115,6 @@
 				<xsl:with-param name="x" select="$x" />
 				<xsl:with-param name="y" select="$y" />
 			</xsl:call-template>
-			
-			<!-- FIXME: if y > 1 don't draw -->
-	    	<xsl:if test="$instruction/core:directions">
-				<text class="direction"><xsl:value-of select="$instruction/core:directions/text()" /></text>
-			</xsl:if>
 		</g>
 
 		<xsl:variable name="depIRI" select="//rdf:Description[core:depVariationInstruction/@rdf:resource=$currentInstruction]/@rdf:about" />
@@ -181,7 +176,10 @@
 				<circle cx="{$ex}" cy="{$ey}" r="7" style="stroke:white; stroke-width:2px;"/>
 			</g>
 		</xsl:if>
-		
+		<!-- FIXME: if y > 1 don't draw -->
+	    <xsl:if test="$instruction/core:direction">
+			<text class="direction"><xsl:value-of select="$instruction/core:direction/text()" /></text>
+		</xsl:if>
 	</xsl:template>
 	 	    		
 	<xsl:template name="method">
