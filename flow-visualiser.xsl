@@ -108,17 +108,17 @@
 				   		<xsl:with-param name="x" select="$x" />
 				   		<xsl:with-param name="y" select="position()" />
 				   	</xsl:call-template>
-				   	<xsl:if test="$instruction/core:direction">
-						<xsl:element name="line">
-							<xsl:attribute name="class">descriptionConnection</xsl:attribute>
-							<xsl:attribute name="x1"><xsl:value-of select="10" />px</xsl:attribute>
-							<xsl:attribute name="x2"><xsl:value-of select="(number($pos)-1) * ($x + ($mw div 2))+20" />px</xsl:attribute>
-							<xsl:attribute name="y1"><xsl:value-of select="$y+$mh+$ch+25" />px</xsl:attribute>
-							<xsl:attribute name="y2"><xsl:value-of select="($y+$mh+$ch+$cs+$ds)-15" />px</xsl:attribute>
-						</xsl:element>
-						<text class="direction" x="10" y="{$y+$mh+$ch+$cs+$ds}"><xsl:value-of select="$instruction/core:direction/text()" /></text>
-					</xsl:if>
 			   	</xsl:for-each>
+		   		<xsl:if test="$instruction/core:direction">
+					<xsl:element name="line">
+						<xsl:attribute name="class">descriptionConnection</xsl:attribute>
+						<xsl:attribute name="x1"><xsl:value-of select="30" />px</xsl:attribute>
+						<xsl:attribute name="x2"><xsl:value-of select="($mw div 2)" />px</xsl:attribute>
+						<xsl:attribute name="y1"><xsl:value-of select="$y+$mh+$ch+35" />px</xsl:attribute>
+						<xsl:attribute name="y2"><xsl:value-of select="($y+$mh+$ch+$cs+$ds)-20" />px</xsl:attribute>
+					</xsl:element>
+					<text class="direction" x="10" y="{$y+$mh+$ch+$cs+$ds}"><xsl:value-of select="$instruction/core:direction/text()" /></text>
+				</xsl:if>
 	   		</g>
 			<xsl:variable name="iriMethod" select="$instruction/core:hasMethod/@rdf:resource" />
 			<xsl:call-template name="method">
@@ -131,6 +131,8 @@
 
 		<xsl:variable name="depIRI" select="//rdf:Description[core:depVariationInstruction/@rdf:resource=$currentInstruction]/@rdf:about" />
 		<xsl:variable name="variationIRI" select="//rdf:Description[core:variation/@rdf:resource=$depIRI]/@rdf:about" />
+		
+		
 		<xsl:for-each select="//rdf:Description[(core:depVariationInstruction/@rdf:resource=$depIRIBase) or (core:depVariationInstruction/@rdf:resource=$currentInstruction)]">
 			<xsl:variable name="pos" select="position()" />
 			<xsl:variable name="nextY">
@@ -161,6 +163,7 @@
 				    	</xsl:call-template> 
 			    	</xsl:otherwise>
 		    	</xsl:choose>
+		    	
 	    	</xsl:if>
 		   	<xsl:if test="$pos &gt; 1">
 		   		<!-- draw fork -->
@@ -172,7 +175,9 @@
 					<xsl:attribute name="y2"><xsl:value-of select="number($pos) * ($mh+$ch+$cs) - ($mh div 2)" />px</xsl:attribute>
 				</xsl:element>
 			</xsl:if>
+			
 		</xsl:for-each>
+
 		<xsl:if test="not($depIRI or $depIRIBase)">
 		    <!-- draw end node -->
     		<xsl:variable name="ex" select="$x+$mw+$is+10" />
