@@ -34,7 +34,9 @@
 		<!-- instruction start y -->
 	<xsl:variable name="iy" select="20" />	
 		<!-- instruction space -->
-	<xsl:variable name="is" select="20" />	
+	<xsl:variable name="is" select="20" />
+	<!-- description space -->
+	<xsl:variable name="ds" select="50" />
 
 	<xsl:variable name="header">
 			<script type="application/ecmascript" xlink:href="../flow-visualizer/scripts/controller.js"/>
@@ -106,6 +108,16 @@
 				   		<xsl:with-param name="x" select="$x" />
 				   		<xsl:with-param name="y" select="position()" />
 				   	</xsl:call-template>
+				   	<xsl:if test="$instruction/core:direction">
+						<xsl:element name="line">
+							<xsl:attribute name="class">descriptionConnection</xsl:attribute>
+							<xsl:attribute name="x1"><xsl:value-of select="10" />px</xsl:attribute>
+							<xsl:attribute name="x2"><xsl:value-of select="(number($pos)-1) * ($x + ($mw div 2))+20" />px</xsl:attribute>
+							<xsl:attribute name="y1"><xsl:value-of select="$y+$mh+$ch+25" />px</xsl:attribute>
+							<xsl:attribute name="y2"><xsl:value-of select="($y+$mh+$ch+$cs+$ds)-15" />px</xsl:attribute>
+						</xsl:element>
+						<text class="direction" x="10" y="{$y+$mh+$ch+$cs+$ds}"><xsl:value-of select="$instruction/core:direction/text()" /></text>
+					</xsl:if>
 			   	</xsl:for-each>
 	   		</g>
 			<xsl:variable name="iriMethod" select="$instruction/core:hasMethod/@rdf:resource" />
@@ -177,9 +189,6 @@
 			</g>
 		</xsl:if>
 		<!-- FIXME: if y > 1 don't draw -->
-	    <xsl:if test="$instruction/core:direction">
-			<text class="direction"><xsl:value-of select="$instruction/core:direction/text()" /></text>
-		</xsl:if>
 	</xsl:template>
 	 	    		
 	<xsl:template name="method">

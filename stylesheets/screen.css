@@ -84,3 +84,8 @@ line.processConnection {
   	stroke-width: 4px;	
   	stroke-linecap: round;
 }
+
+.descriptionConnection {
+	stroke-dasharray: 3;
+	stroke-dashoffset: 3;
+}
