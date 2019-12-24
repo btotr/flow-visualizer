@@ -39,7 +39,7 @@
 	<xsl:variable name="ds" select="50" />
 
 	<xsl:variable name="header">
-			<script type="application/ecmascript" xlink:href="../flow-visualizer/scripts/controller.js"/>
+			<script type="application/ecmascript" xlink:href="https://flow.recipes/flow-visualizer/scripts/controller.js"/>
 			<defs>
 		    	<rect id="process" rx="10" ry="10" width="{$mw}" height="{$mh}">
 			       	<set attributeName="fill" to="red" begin="mousedown" end="mouseup" dur="4s" />
@@ -59,7 +59,7 @@
 	<xsl:template match="/rdf:RDF">
 
 		<xsl:processing-instruction name="xml-stylesheet">
-			href="../flow-visualizer/stylesheets/screen.css" 
+			href="https://flow.recipes/flow-visualizer/stylesheets/screen.css" 
 			type="text/css"
 		</xsl:processing-instruction>
 
