@@ -96,22 +96,24 @@
 				<xsl:attribute name="style">transform: translate(<xsl:value-of select="$x" />px, <xsl:value-of select="$iy + $y" />px)</xsl:attribute>
 				<xsl:variable name="iriComponentUnit" select="$instruction/core:hasComponentUnit/@rdf:nodeID" />
 				<xsl:for-each select="$iriComponentUnit">
-					<xsl:variable name="pos" select="position()" />
-					<xsl:if test="$pos = '1'">
-						<use xlink:href="#components" />
-						<xsl:element name="line">
-							<xsl:attribute name="class">processConnection</xsl:attribute>
-							<xsl:attribute name="x1"><xsl:value-of select="$cw div 2 - (($cw - $mw) div 2 )" />px</xsl:attribute>
-							<xsl:attribute name="x2"><xsl:value-of select="$cw div 2 - (($cw - $mw) div 2 )" />px</xsl:attribute>
-							<xsl:attribute name="y1"><xsl:value-of select="$ch" />px</xsl:attribute>
-							<xsl:attribute name="y2"><xsl:value-of select="$ch+$cs" />px</xsl:attribute>
-						</xsl:element>
-					</xsl:if>
-					<xsl:call-template name="componentUnit">
-				   		<xsl:with-param name="componentUnit" select="//rdf:Description[@rdf:nodeID=$iriComponentUnit][$pos]" />
-				   		<xsl:with-param name="x" select="$x" />
-				   		<xsl:with-param name="y" select="position()" />
-				   	</xsl:call-template>
+					<xsl:if test="//rdf:Description[@rdf:nodeID=$iriComponentUnit]/core:hasComponent">
+						<xsl:variable name="pos" select="position()" />
+						<xsl:if test="$pos = '1'">
+							<use xlink:href="#components" />
+							<xsl:element name="line">
+								<xsl:attribute name="class">processConnection</xsl:attribute>
+								<xsl:attribute name="x1"><xsl:value-of select="$cw div 2 - (($cw - $mw) div 2 )" />px</xsl:attribute>
+								<xsl:attribute name="x2"><xsl:value-of select="$cw div 2 - (($cw - $mw) div 2 )" />px</xsl:attribute>
+								<xsl:attribute name="y1"><xsl:value-of select="$ch" />px</xsl:attribute>
+								<xsl:attribute name="y2"><xsl:value-of select="$ch+$cs" />px</xsl:attribute>
+							</xsl:element>
+						</xsl:if>
+						<xsl:call-template name="componentUnit">
+					   		<xsl:with-param name="componentUnit" select="//rdf:Description[@rdf:nodeID=$iriComponentUnit][$pos]" />
+					   		<xsl:with-param name="x" select="$x" />
+					   		<xsl:with-param name="y" select="position()" />
+					   	</xsl:call-template>
+				   	</xsl:if>
 			   	</xsl:for-each>
 		   		<xsl:if test="$instruction/core:direction">
 					<xsl:element name="line">
