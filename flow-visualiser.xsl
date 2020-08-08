@@ -66,7 +66,7 @@
 		<svg version="1.1" onload="new Controller()">
 			<xsl:copy-of select="$header" />
 		    <xsl:if test="rdf:Description[rdf:type/@rdf:resource='https://flow.recipes/ns/core#Recipe']">
-		    		<title id="recipeName"><xsl:value-of select="rdf:Description/rdfs:label"/></title>
+		    	<title><xsl:value-of select="rdf:Description/rdfs:label"/></title>
 				<text id="recipeName"><xsl:value-of select="rdf:Description/rdfs:label"/></text>
 			</xsl:if>
 			<circle cx="{$ix - $is - 10}" cy="{$ch+$cs+($mh div 2 )}" r="10" id="startProcess"/>
