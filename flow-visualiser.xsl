@@ -75,7 +75,7 @@
 			<circle cx="{$ix - $is - 10}" cy="{$ch+$cs+($mh div 2 )}" r="10" id="startProcess"/>
 			<xsl:call-template name="instruction">
 				<!-- find a instruction without dependency which must be the first. -->
-    			<xsl:with-param name="instruction" select="rdf:Description[rdf:type/@rdf:resource='https://flow.recipes/ns/core#Instruction' and not(core:depVariationInstruction)][1]" />
+    			<xsl:with-param name="instruction" select="//rdf:Description[rdf:type/@rdf:resource='https://flow.recipes/ns/core#Instruction' and not(core:depVariationInstruction)][1]" />
 				<xsl:with-param name="x" select="$ix" />
 				<xsl:with-param name="y" select="0" />
     		</xsl:call-template>
@@ -96,7 +96,7 @@
 				<xsl:attribute name="style">transform: translate(<xsl:value-of select="$x" />px, <xsl:value-of select="$iy + $y" />px)</xsl:attribute>
 				<xsl:variable name="iriComponentUnit" select="$instruction/core:hasComponentUnit/[@rdf:resource or @rdf:nodeID]" />
 				<xsl:for-each select="$iriComponentUnit">
-					<xsl:if test="*//rdf:Description[@rdf:about=$iriComponentUnit or @rdf:nodeID=$iriComponentUnit]/core:hasComponent">
+					<xsl:if test="//rdf:Description[@rdf:about=$iriComponentUnit or @rdf:nodeID=$iriComponentUnit]/core:hasComponent">
 						<xsl:variable name="pos" select="position()" />
 						<xsl:if test="$pos = '1'">
 							<use xlink:href="#components" />
@@ -109,7 +109,7 @@
 							</xsl:element>
 						</xsl:if>
 						<xsl:call-template name="componentUnit">
-					   		<xsl:with-param name="componentUnit" select="*//rdf:Description[@rdf:about=$iriComponentUnit or @rdf:nodeID=$iriComponentUnit][$pos]" />
+					   		<xsl:with-param name="componentUnit" select="//rdf:Description[@rdf:about=$iriComponentUnit or @rdf:nodeID=$iriComponentUnit][$pos]" />
 					   		<xsl:with-param name="x" select="$x" />
 					   		<xsl:with-param name="y" select="position()" />
 					   	</xsl:call-template>
