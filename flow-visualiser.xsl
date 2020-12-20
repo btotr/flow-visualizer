@@ -61,24 +61,32 @@
 
 	<!-- Grouping Using the Muenchian Method -->
 	<xsl:key name="dKey" match="rdf:Description" use="@rdf:about"/>
-	<xsl:key name="tKey" match="rdf:Description" use="@rdf:type"/>
-		
-		<xsl:template match="node()|@*">
-		 <xsl:copy>
-		   <xsl:apply-templates select="node()|@*"/>
-		 </xsl:copy>
-		</xsl:template>
-		
-		
-		
-		<xsl:template match="//rdf:Description[generate-id() = generate-id(key('dKey', @rdf:about)[1])]">
-		 <xsl:message>current: <xsl:value-of select="node()" /></xsl:message>
+
+	<xsl:template match="node()|@*">
 		<xsl:copy>
-		  <xsl:apply-templates select="@*|key('dKey', @rdf:about)/node()"/>
+		   <xsl:apply-templates select="node()|@*"/>
 		</xsl:copy>
 	</xsl:template>
 
-	<xsl:template match="rdf:Description"/>
+	<xsl:template match="//rdf:Description[generate-id() = generate-id(key('dKey', @rdf:about)[1])]">
+		<xsl:copy>
+			<xsl:apply-templates select="@*|key('dKey', @rdf:about)/node()"/>
+		</xsl:copy>
+	</xsl:template>
+	
+	<xsl:template match="rdf:Description" />
+
+	<xsl:key name="tKey" match="rdf:type" use="@rdf:resource"/>
+	<xsl:template match="rdf:type[not(generate-id(.) = generate-id(key('tKey', @rdf:resource)[1]))]">
+ 		<!--xsl:message>current: <xsl:value-of select="generate-id(.)"/> - <xsl:value-of select="generate-id(key('tKey', @rdf:resource)[1])"/></xsl:message-->
+	</xsl:template>
+	
+	<xsl:key name="cKey" match="core:hasComponentUnit" use="@rdf:resource"/>
+	<xsl:template match="core:hasComponentUnit[not(generate-id(.) = generate-id(key('cKey', @rdf:resource)[1]))]"/>
+
+
+	<xsl:key name="mKey" match="core:hasMethod" use="@rdf:resource"/>
+	<xsl:template match="core:hasMethod[not(generate-id(.) = generate-id(key('mKey', @rdf:resource)[1]))]"/>
 
 	<xsl:template match="/rdf:RDF">
 		
@@ -120,8 +128,8 @@
 				<xsl:attribute name="style">transform: translate(<xsl:value-of select="$x" />px, <xsl:value-of select="$iy + $y" />px)</xsl:attribute>
 				<xsl:variable name="iriComponentUnit" select="$instruction/core:hasComponentUnit/@rdf:resource" />
 					<xsl:message>iriComponentUnit: <xsl:value-of select="$iriComponentUnit" /></xsl:message>
-				<xsl:for-each select="$iriComponentUnit">
-					<xsl:if test="//rdf:Description[@rdf:about=$iriComponentUnit or @rdf:nodeID=$iriComponentUnit]/core:hasComponent">
+				<xsl:for-each select="//rdf:Description[@rdf:about=$iriComponentUnit or @rdf:nodeID=$iriComponentUnit]/core:hasComponent">
+					<!--xsl:if test="//rdf:Description[@rdf:about=$iriComponentUnit or @rdf:nodeID=$iriComponentUnit]/core:hasComponent"-->
 						<xsl:variable name="pos" select="position()" />
 						 <xsl:message>pos:<xsl:value-of select="$pos" /> </xsl:message> 
 						<xsl:if test="$pos = '1'">
@@ -139,7 +147,7 @@
 					   		<xsl:with-param name="x" select="$x" />
 					   		<xsl:with-param name="y" select="position()" />
 					   	</xsl:call-template>
-				   	</xsl:if>
+				   	<!--/xsl:if-->
 			   	</xsl:for-each>
 		   		<xsl:if test="$instruction/core:direction">
 					<xsl:element name="line">
