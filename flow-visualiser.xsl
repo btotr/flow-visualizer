@@ -94,9 +94,9 @@
 			<xsl:attribute name="class">instruction</xsl:attribute>
 			<g>
 				<xsl:attribute name="style">transform: translate(<xsl:value-of select="$x" />px, <xsl:value-of select="$iy + $y" />px)</xsl:attribute>
-				<xsl:variable name="iriComponentUnit" select="$instruction/core:hasComponentUnit/@rdf:resource" />
+				<xsl:variable name="iriComponentUnit" select="$instruction/core:hasComponentUnit/[@rdf:resource or @rdf:nodeID]" />
 				<xsl:for-each select="$iriComponentUnit">
-					<xsl:if test="//rdf:Description[@rdf:about=$iriComponentUnit]/core:hasComponent">
+					<xsl:if test="*//rdf:Description[@rdf:about=$iriComponentUnit or @rdf:nodeID=$iriComponentUnit]/core:hasComponent">
 						<xsl:variable name="pos" select="position()" />
 						<xsl:if test="$pos = '1'">
 							<use xlink:href="#components" />
@@ -109,7 +109,7 @@
 							</xsl:element>
 						</xsl:if>
 						<xsl:call-template name="componentUnit">
-					   		<xsl:with-param name="componentUnit" select="//rdf:Description[@rdf:about=$iriComponentUnit][$pos]" />
+					   		<xsl:with-param name="componentUnit" select="*//rdf:Description[@rdf:about=$iriComponentUnit or @rdf:nodeID=$iriComponentUnit][$pos]" />
 					   		<xsl:with-param name="x" select="$x" />
 					   		<xsl:with-param name="y" select="position()" />
 					   	</xsl:call-template>
