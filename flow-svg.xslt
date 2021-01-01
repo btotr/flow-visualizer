@@ -146,7 +146,7 @@
 		<xsl:variable name="variationIRI" select="//rdf:Description[core:variation/@rdf:resource=$depIRI]/@rdf:about" />
 		
 		
-		<xsl:for-each select="//rdf:Description[(core:depVariationInstruction/@rdf:resource=$depIRIBase) or (core:depVariationInstruction/@rdf:resource=$currentInstruction)]">
+		<xsl:for-each select="//rdf:Description[(core:depVariationInstruction/@rdf:resource=$depIRIBase) or (core:depVariationInstruction/@rdf:resource=$currentInstruction)[1]]">
 			<xsl:variable name="pos" select="position()" />
 			<xsl:variable name="nextY">
 			  <xsl:choose>
