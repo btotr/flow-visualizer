@@ -66,6 +66,7 @@
 		</xsl:processing-instruction>
 
 		<svg version="1.1" onload="new Controller()" preserveAspectRatio="xMidYMid meet" viewBox="0 0 200 400">
+			<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
 			<xsl:copy-of select="$header" />
 		    <xsl:if test="rdf:Description[rdf:type/@rdf:resource='https://flow.recipes/ns/core#Recipe']">
 		    	<title><xsl:value-of select="rdf:Description/rdfs:label/text()"/></title>
