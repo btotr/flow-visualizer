@@ -70,10 +70,13 @@
 			<xsl:copy-of select="$header" />
 		    <xsl:if test="rdf:Description[rdf:type/@rdf:resource='https://flow.recipes/ns/core#Recipe']">
 		    	<title><xsl:value-of select="rdf:Description/rdfs:label/text()"/></title>
-				<!--text id="recipeName"><xsl:value-of select="rdf:Description/rdfs:label/text()"/>
-					<xsl:attribute name="x">20px</xsl:attribute>
-					<xsl:attribute name="y">20px</xsl:attribute>
-				</text-->
+		    	<g><text>
+					
+					<xsl:attribute name="id">recipeName</xsl:attribute>
+					<xsl:attribute name="x">10px</xsl:attribute>
+					<xsl:attribute name="y">10px</xsl:attribute>
+					<xsl:value-of select="rdf:Description/rdfs:label/text()"/>
+				</text></g>
 			</xsl:if>
 			<circle cx="{$ix - $is - 10}" cy="{$ch+$cs+($mh div 2 )}" r="10" id="startProcess"/>
 			<!-- find a instruction without dependency which must be the first. -->
