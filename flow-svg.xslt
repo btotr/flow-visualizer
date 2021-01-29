@@ -51,9 +51,24 @@
 					<polygon  points="0,8.043 3.844,4.199 7.687,8.043 3.844,8.043 "/>
 				</g>
 		    	
-		    	<rect id="components" rx="0" ry="0" x="{-(($cw - $mw) div 2 )}" width="{$cw}" height="{$ch}">
+		    	<clipPath id="clip">
+    				<rect x="{-(($cw - $mw) div 2 )}" width="{$cw  + 40}" height="{$ch}" />
+    			</clipPath>
+		    	
+		    	<rect id="components"  rx="0" ry="0" x="{-(($cw - $mw) div 2 )}" width="{$cw}" height="{$ch}">
 			       	<set attributeName="fill" to="yellow" begin="mousedown" end="mouseup" dur="4s" />
 		    	</rect>
+		    	
+	    	    <linearGradient id="Gradient">
+					<stop offset="0%" stop-color="white" />
+					<stop offset="85%" stop-color="white" />
+					<stop offset="100%" stop-color="black" />
+				</linearGradient>
+				
+				 <mask id="Mask">
+    				<rect x="{-(($cw - $mw) div 2 )}" width="{$cw + 1}" height="{$ch}" fill="url(#Gradient)"  />
+    			</mask>
+		    	
 		    </defs>
 	</xsl:variable>
 	
@@ -74,7 +89,7 @@
 					
 					<xsl:attribute name="id">recipeName</xsl:attribute>
 					<xsl:attribute name="x">10px</xsl:attribute>
-					<xsl:attribute name="y">10px</xsl:attribute>
+					<xsl:attribute name="y">15px</xsl:attribute>
 					<xsl:value-of select="rdf:Description/rdfs:label/text()"/>
 				</text></g>
 			</xsl:if>
@@ -118,12 +133,13 @@
 								<xsl:attribute name="y1"><xsl:value-of select="$ch" />px</xsl:attribute>
 								<xsl:attribute name="y2"><xsl:value-of select="$ch+$cs" />px</xsl:attribute>
 							</xsl:element>
-						</xsl:if>
+						</xsl:if> <g clip-path="url(#clip)" mask="url(#Mask)">
 						<xsl:call-template name="componentUnit">
 					   		<xsl:with-param name="componentUnit" select="//rdf:Description[@rdf:nodeID=$iriComponentUnit][$pos]" />
 					   		<xsl:with-param name="x" select="$x" />
 					   		<xsl:with-param name="y" select="position()" />
 					   	</xsl:call-template>
+					   	</g>
 					   	</xsl:if>
 			   	</xsl:for-each>
 		   		<xsl:if test="$instruction/core:direction">
