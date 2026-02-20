@@ -3,13 +3,13 @@
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
 	xmlns="http://www.w3.org/2000/svg" 
 	xmlns:xlink="http://www.w3.org/1999/xlink"
-	xmlns:core="https://flow.recipes/ns/core#"
+	xmlns:core="http://hhz37uwqkfcbfuztcp6w7cyjfphezqelp56ajlb2for75rragzirbcid.onion/ns/core#"
 	xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
 	xmlns:owl="http://www.w3.org/2002/07/owl#"
 	xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
 	xmlns:schema="http://schema.org/"
 	xmlns:skos="http://www.w3.org/2008/05/skos#"
-	xmlns:viz="https://flow.recipes/ns/flow-visualiser#">
+	xmlns:viz="http://hhz37uwqkfcbfuztcp6w7cyjfphezqelp56ajlb2for75rragzirbcid.onion/ns/flow-visualiser#">
 	
 	<xsl:output method="xml" 
 		doctype-system="http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd" 
@@ -40,7 +40,7 @@
 	<xsl:variable name="ds" select="50" />
 
 	<xsl:variable name="header">
-			<script type="application/ecmascript" xlink:href="https://flow.recipes/flow-visualizer/scripts/controller.js"/>
+			<script type="application/ecmascript" xlink:href="http://hhz37uwqkfcbfuztcp6w7cyjfphezqelp56ajlb2for75rragzirbcid.onion/flow-visualizer/scripts/controller.js"/>
 			<defs>
 		    	<rect id="process" rx="10" ry="10" width="{$mw}" height="{$mh}">
 			       	<set attributeName="fill" to="red" begin="mousedown" end="mouseup" dur="4s" />
@@ -76,14 +76,14 @@
 	<xsl:template match="/rdf:RDF" >
 		
 		<xsl:processing-instruction name="xml-stylesheet">
-			href="https://flow.recipes/flow-visualizer/stylesheets/screen.css" 
+			href="http://hhz37uwqkfcbfuztcp6w7cyjfphezqelp56ajlb2for75rragzirbcid.onion/flow-visualizer/stylesheets/screen.css" 
 			type="text/css"
 		</xsl:processing-instruction>
 
 		<svg version="1.1" onload="new Controller()"   preserveAspectRatio="xMinYMin meet">
 			<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
 			<xsl:copy-of select="$header" />
-		    <xsl:if test="rdf:Description[rdf:type/@rdf:resource='https://flow.recipes/ns/core#Recipe']">
+		    <xsl:if test="rdf:Description[rdf:type/@rdf:resource='http://hhz37uwqkfcbfuztcp6w7cyjfphezqelp56ajlb2for75rragzirbcid.onion/ns/core#Recipe']">
 		    	<title><xsl:value-of select="rdf:Description/rdfs:label/text()"/></title>
 		    	<g><text>
 					
@@ -95,7 +95,7 @@
 			</xsl:if>
 			<circle cx="{$ix - $is - 10}" cy="{$ch+$cs+($mh div 2 )}" r="10" id="startProcess"/>
 			<!-- find a instruction without dependency which must be the first. -->
-			<xsl:variable name="firstInstruction" select="//rdf:Description[rdf:type/@rdf:resource='https://flow.recipes/ns/core#Instruction' and not(core:depVariationInstruction)][1]" />
+			<xsl:variable name="firstInstruction" select="//rdf:Description[rdf:type/@rdf:resource='http://hhz37uwqkfcbfuztcp6w7cyjfphezqelp56ajlb2for75rragzirbcid.onion/ns/core#Instruction' and not(core:depVariationInstruction)][1]" />
 			<xsl:message>First Instruction: <xsl:value-of select="$firstInstruction/@rdf:about" /></xsl:message>
 			<xsl:call-template name="instruction">
 				
