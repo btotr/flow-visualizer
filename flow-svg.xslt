@@ -3,13 +3,13 @@
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
 	xmlns="http://www.w3.org/2000/svg" 
 	xmlns:xlink="http://www.w3.org/1999/xlink"
-	xmlns:core="http://hhz37uwqkfcbfuztcp6w7cyjfphezqelp56ajlb2for75rragzirbcid.onion/ns/core#"
+	xmlns:core="ipns://k51qzi5uqu5djcb94wpxqfvhjnajw30k0pm2c0x9tqrgrgud0fdvqlcokpwt9n/ns/core#"
 	xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
 	xmlns:owl="http://www.w3.org/2002/07/owl#"
 	xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
 	xmlns:schema="http://schema.org/"
 	xmlns:skos="http://www.w3.org/2008/05/skos#"
-	xmlns:viz="http://hhz37uwqkfcbfuztcp6w7cyjfphezqelp56ajlb2for75rragzirbcid.onion/ns/flow-visualiser#">
+	xmlns:viz="ipns://k51qzi5uqu5djcb94wpxqfvhjnajw30k0pm2c0x9tqrgrgud0fdvqlcokpwt9n/ns/flow-visualiser#">
 	
 	<xsl:output method="xml" 
 		doctype-system="http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd" 
@@ -40,7 +40,73 @@
 	<xsl:variable name="ds" select="50" />
 
 	<xsl:variable name="header">
-			<script type="application/ecmascript" xlink:href="http://hhz37uwqkfcbfuztcp6w7cyjfphezqelp56ajlb2for75rragzirbcid.onion/flow-visualizer/scripts/controller.js"/>
+		<script type="application/ecmascript"><![CDATA[
+function Controller() {
+    console.log("xcxcxcxtttttttt   Controller") ;
+    var svg = document.querySelector("svg");
+    var endProces = svg.getElementById("endProcess")
+    var endProcesBB = endProces.getBBox();
+    var width = endProcesBB.x + endProcesBB.width + 10;
+    svg.setAttribute("viewBox", [0, 0, width,1].join(" "));
+    var directions = document.getElementsByClassName("direction");
+    for (var i = 0; i < directions.length; i++) {
+        var direction = directions[i];
+        var multiline = createSVGtext(direction.innerHTML, parseInt(direction.getAttribute("x")), parseInt(direction.getAttribute("y")));
+        direction.parentNode.appendChild(multiline);
+        direction.parentNode.removeChild(direction);
+    }
+}
+
+function createSVGtext(caption, x, y) {
+    //  This function attempts to create a new svg "text" element, chopping 
+    //  it up into "tspan" pieces, if the caption is too long
+    //
+    var svgText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    svgText.setAttributeNS(null, 'x', x);
+    svgText.setAttributeNS(null, 'y', y);
+    svgText.setAttributeNS(null, 'font-size', 12);
+
+
+    var MAXIMUM_CHARS_PER_LINE = 18;
+    var LINE_HEIGHT = 16;
+
+    var words = caption.split(" ");
+    var line = "";
+
+    for (var n = 0; n < words.length; n++) {
+
+        var testLine = line + words[n] + " ";
+        if (testLine.length > MAXIMUM_CHARS_PER_LINE)
+        {
+            //  Add a new <tspan> element
+            var svgTSpan = document.createElementNS('http://www.w3.org/2000/svg', 'tspan');
+            svgTSpan.setAttributeNS(null, 'x', x);
+            svgTSpan.setAttributeNS(null, 'y', y);
+
+            var tSpanTextNode = document.createTextNode(line);
+            svgTSpan.appendChild(tSpanTextNode);
+            svgText.appendChild(svgTSpan);
+
+            line = words[n] + " ";
+            y += LINE_HEIGHT;
+        }
+        else {
+            line = testLine;
+        }
+    }
+
+    var svgTSpan = document.createElementNS('http://www.w3.org/2000/svg', 'tspan');
+    svgTSpan.setAttributeNS(null, 'x', x);
+    svgTSpan.setAttributeNS(null, 'y', y);
+
+    var tSpanTextNode = document.createTextNode(line);
+    svgTSpan.appendChild(tSpanTextNode);
+
+    svgText.appendChild(svgTSpan);
+
+    return svgText;
+}
+		]]></script>
 			<defs>
 		    	<rect id="process" rx="10" ry="10" width="{$mw}" height="{$mh}">
 			       	<set attributeName="fill" to="red" begin="mousedown" end="mouseup" dur="4s" />
@@ -75,15 +141,104 @@
 	
 	<xsl:template match="/rdf:RDF" >
 		
-		<xsl:processing-instruction name="xml-stylesheet">
-			href="http://hhz37uwqkfcbfuztcp6w7cyjfphezqelp56ajlb2for75rragzirbcid.onion/flow-visualizer/stylesheets/screen.css" 
-			type="text/css"
-		</xsl:processing-instruction>
-
 		<svg version="1.1" onload="new Controller()"   preserveAspectRatio="xMinYMin meet">
+			<style type="text/css"><![CDATA[
+		@font-face {
+  font-family:HelveticaLight;
+  src: local("Helvetica Neue Light"),
+       local("HelveticaNeue-Light"),
+       url(helveticaneue-light-001.ttf);
+}
+
+svg {
+	width:100vw; 
+	height:100vh; 
+}
+
+text {
+	fill: DimGray;
+	font-weight: 300;
+	font-size: 11px;
+	font-family: HelveticaLight, sans-serif;
+}
+
+line {
+	stroke: silver;
+	stroke-linecap:butt;
+	stroke-width:1px;
+}
+
+line.processConnection {
+	stroke-width:0.2px;
+}
+
+#recipeName {
+	font-size: 12px;
+}
+
+
+#process {
+	fill: white; 
+	stroke: silver;
+  	stroke-width: 1px;
+}
+
+#startProcess,
+#endProcess {
+	fill: silver;	
+}
+
+#timeProcess {
+	fill: silver; 
+	transform: scale(1.8);
+}
+
+#components {
+	fill: white; 
+	stroke: LightGray;
+  	stroke-width: 0.2px;
+
+}
+
+.instruction .method{ 
+	font-size: 12px;
+	font-weight: 500;
+}
+
+.instruction .direction {
+	color: LightGray;
+}
+
+.componentUnit {
+	width: 200px; 
+	height:400px;
+	font-size: 10px;
+}
+
+.weight,
+.addition {
+	font-weight: 100;
+	fill: #f32853;
+}
+
+.ingredient {
+	font-weight: 500;
+}
+
+.fork {
+  	stroke-width: 4px;	
+  	stroke-linecap: round;
+}
+
+.descriptionConnection {
+	stroke-dasharray: 3;
+	stroke-dashoffset: 3;
+}	
+			]]></style>
+
 			<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
 			<xsl:copy-of select="$header" />
-		    <xsl:if test="rdf:Description[rdf:type/@rdf:resource='http://hhz37uwqkfcbfuztcp6w7cyjfphezqelp56ajlb2for75rragzirbcid.onion/ns/core#Recipe']">
+		    <xsl:if test="rdf:Description[rdf:type/@rdf:resource='ipns://k51qzi5uqu5djcb94wpxqfvhjnajw30k0pm2c0x9tqrgrgud0fdvqlcokpwt9n/ns/core#Recipe']">
 		    	<title><xsl:value-of select="rdf:Description/rdfs:label/text()"/></title>
 		    	<g><text>
 					
@@ -95,7 +250,7 @@
 			</xsl:if>
 			<circle cx="{$ix - $is - 10}" cy="{$ch+$cs+($mh div 2 )}" r="10" id="startProcess"/>
 			<!-- find a instruction without dependency which must be the first. -->
-			<xsl:variable name="firstInstruction" select="//rdf:Description[rdf:type/@rdf:resource='http://hhz37uwqkfcbfuztcp6w7cyjfphezqelp56ajlb2for75rragzirbcid.onion/ns/core#Instruction' and not(core:depVariationInstruction)][1]" />
+			<xsl:variable name="firstInstruction" select="//rdf:Description[.//rdf:type/@rdf:resource='ipns://k51qzi5uqu5djcb94wpxqfvhjnajw30k0pm2c0x9tqrgrgud0fdvqlcokpwt9n/ns/core#Instruction' and not(core:depVariationInstruction)][1]" />
 			<xsl:message>First Instruction: <xsl:value-of select="$firstInstruction/@rdf:about" /></xsl:message>
 			<xsl:call-template name="instruction">
 				
@@ -118,10 +273,12 @@
 			<xsl:attribute name="class">instruction</xsl:attribute>
 			<g>
 				<xsl:attribute name="style">transform: translate(<xsl:value-of select="$x" />px, <xsl:value-of select="$iy + $y" />px)</xsl:attribute>
-				<xsl:variable name="iriComponentUnit" select="$instruction/core:hasComponentUnit/@rdf:nodeID" />
-				 <xsl:message>iriComponentUnit:<xsl:value-of select="$iriComponentUnit" /> </xsl:message> 
-				<xsl:for-each select="//rdf:Description[@rdf:nodeID=$iriComponentUnit]/core:hasComponent">
-					<xsl:if test="//rdf:Description[@rdf:nodeID=$iriComponentUnit]/core:hasComponent">
+				<!--xsl:variable name="iriComponentUnit" select="$instruction/core:hasComponentUnit/text()|$instruction/core:hasComponentUnit/rdf:Description[@rdf:about]" />
+				 <xsl:message>iriComponentUnit:<xsl:value-of select="$iriComponentUnit" /> </xsl:message--> 
+				 <xsl:for-each select="$instruction/core:hasComponentUnit/rdf:Description|$instruction/core:hasComponentUnit/text()">
+					<xsl:variable name="iriComponentUnit" select="@rdf:about|." />
+
+					<xsl:if test="//rdf:Description[@rdf:about=$iriComponentUnit]/core:hasComponent">
 						<xsl:variable name="pos" select="position()" />
 						 <xsl:message>pos:<xsl:value-of select="$pos" /> </xsl:message> 
 						<xsl:if test="$pos = '1'">
@@ -135,7 +292,7 @@
 							</xsl:element>
 						</xsl:if> <g clip-path="url(#clip)" mask="url(#Mask)">
 						<xsl:call-template name="componentUnit">
-					   		<xsl:with-param name="componentUnit" select="//rdf:Description[@rdf:nodeID=$iriComponentUnit][$pos]" />
+					   		<xsl:with-param name="componentUnit" select="//rdf:Description[@rdf:about=$iriComponentUnit][$pos]" />
 					   		<xsl:with-param name="x" select="$x" />
 					   		<xsl:with-param name="y" select="position()" />
 					   	</xsl:call-template>
