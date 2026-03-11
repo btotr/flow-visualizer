@@ -292,7 +292,7 @@ line.processConnection {
 							</xsl:element>
 						</xsl:if> <g clip-path="url(#clip)" mask="url(#Mask)">
 						<xsl:call-template name="componentUnit">
-					   		<xsl:with-param name="componentUnit" select="//rdf:Description[@rdf:about=$iriComponentUnit][$pos]" />
+					   		<xsl:with-param name="componentUnit" select="//rdf:Description[@rdf:about=$iriComponentUnit]" />
 					   		<xsl:with-param name="x" select="$x" />
 					   		<xsl:with-param name="y" select="position()" />
 					   	</xsl:call-template>
