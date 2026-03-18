@@ -41,71 +41,70 @@
 
 	<xsl:variable name="header">
 		<script type="application/ecmascript"><![CDATA[
-function Controller() {
-    console.log("xcxcxcxtttttttt   Controller") ;
-    var svg = document.querySelector("svg");
-    var endProces = svg.getElementById("endProcess")
-    var endProcesBB = endProces.getBBox();
-    var width = endProcesBB.x + endProcesBB.width + 10;
-    svg.setAttribute("viewBox", [0, 0, width,1].join(" "));
-    var directions = document.getElementsByClassName("direction");
-    for (var i = 0; i < directions.length; i++) {
-        var direction = directions[i];
-        var multiline = createSVGtext(direction.innerHTML, parseInt(direction.getAttribute("x")), parseInt(direction.getAttribute("y")));
-        direction.parentNode.appendChild(multiline);
-        direction.parentNode.removeChild(direction);
-    }
-}
-
-function createSVGtext(caption, x, y) {
-    //  This function attempts to create a new svg "text" element, chopping 
-    //  it up into "tspan" pieces, if the caption is too long
-    //
-    var svgText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-    svgText.setAttributeNS(null, 'x', x);
-    svgText.setAttributeNS(null, 'y', y);
-    svgText.setAttributeNS(null, 'font-size', 12);
-
-
-    var MAXIMUM_CHARS_PER_LINE = 18;
-    var LINE_HEIGHT = 16;
-
-    var words = caption.split(" ");
-    var line = "";
-
-    for (var n = 0; n < words.length; n++) {
-
-        var testLine = line + words[n] + " ";
-        if (testLine.length > MAXIMUM_CHARS_PER_LINE)
-        {
-            //  Add a new <tspan> element
-            var svgTSpan = document.createElementNS('http://www.w3.org/2000/svg', 'tspan');
-            svgTSpan.setAttributeNS(null, 'x', x);
-            svgTSpan.setAttributeNS(null, 'y', y);
-
-            var tSpanTextNode = document.createTextNode(line);
-            svgTSpan.appendChild(tSpanTextNode);
-            svgText.appendChild(svgTSpan);
-
-            line = words[n] + " ";
-            y += LINE_HEIGHT;
-        }
-        else {
-            line = testLine;
-        }
-    }
-
-    var svgTSpan = document.createElementNS('http://www.w3.org/2000/svg', 'tspan');
-    svgTSpan.setAttributeNS(null, 'x', x);
-    svgTSpan.setAttributeNS(null, 'y', y);
-
-    var tSpanTextNode = document.createTextNode(line);
-    svgTSpan.appendChild(tSpanTextNode);
-
-    svgText.appendChild(svgTSpan);
-
-    return svgText;
-}
+			function Controller() {
+			    var svg = document.querySelector("svg");
+			    var endProces = svg.getElementById("endProcess")
+			    var endProcesBB = endProces.getBBox();
+			    var width = endProcesBB.x + endProcesBB.width + 10;
+			    svg.setAttribute("viewBox", [0, 0, width,1].join(" "));
+			    var directions = document.getElementsByClassName("direction");
+			    for (var i = 0; i < directions.length; i++) {
+			        var direction = directions[i];
+			        var multiline = createSVGtext(direction.innerHTML, parseInt(direction.getAttribute("x")), parseInt(direction.getAttribute("y")));
+			        direction.parentNode.appendChild(multiline);
+			        direction.parentNode.removeChild(direction);
+			    }
+			}
+			
+			function createSVGtext(caption, x, y) {
+			    //  This function attempts to create a new svg "text" element, chopping 
+			    //  it up into "tspan" pieces, if the caption is too long
+			    //
+			    var svgText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+			    svgText.setAttributeNS(null, 'x', x);
+			    svgText.setAttributeNS(null, 'y', y);
+			    svgText.setAttributeNS(null, 'font-size', 12);
+			
+			
+			    var MAXIMUM_CHARS_PER_LINE = 18;
+			    var LINE_HEIGHT = 16;
+			
+			    var words = caption.split(" ");
+			    var line = "";
+			
+			    for (var n = 0; n < words.length; n++) {
+			
+			        var testLine = line + words[n] + " ";
+			        if (testLine.length > MAXIMUM_CHARS_PER_LINE)
+			        {
+			            //  Add a new <tspan> element
+			            var svgTSpan = document.createElementNS('http://www.w3.org/2000/svg', 'tspan');
+			            svgTSpan.setAttributeNS(null, 'x', x);
+			            svgTSpan.setAttributeNS(null, 'y', y);
+			
+			            var tSpanTextNode = document.createTextNode(line);
+			            svgTSpan.appendChild(tSpanTextNode);
+			            svgText.appendChild(svgTSpan);
+			
+			            line = words[n] + " ";
+			            y += LINE_HEIGHT;
+			        }
+			        else {
+			            line = testLine;
+			        }
+			    }
+			
+			    var svgTSpan = document.createElementNS('http://www.w3.org/2000/svg', 'tspan');
+			    svgTSpan.setAttributeNS(null, 'x', x);
+			    svgTSpan.setAttributeNS(null, 'y', y);
+			
+			    var tSpanTextNode = document.createTextNode(line);
+			    svgTSpan.appendChild(tSpanTextNode);
+			
+			    svgText.appendChild(svgTSpan);
+			
+			    return svgText;
+			}
 		]]></script>
 			<defs>
 		    	<rect id="process" rx="10" ry="10" width="{$mw}" height="{$mh}">
@@ -139,101 +138,100 @@ function createSVGtext(caption, x, y) {
 	</xsl:variable>
 	
 	
+
 	<xsl:template match="/rdf:RDF" >
 		
 		<svg version="1.1" onload="new Controller()"   preserveAspectRatio="xMinYMin meet">
 			<style type="text/css"><![CDATA[
-		@font-face {
-  font-family:HelveticaLight;
-  src: local("Helvetica Neue Light"),
-       local("HelveticaNeue-Light"),
-       url(helveticaneue-light-001.ttf);
-}
-
-svg {
-	width:100vw; 
-	height:100vh; 
-}
-
-text {
-	fill: DimGray;
-	font-weight: 300;
-	font-size: 11px;
-	font-family: HelveticaLight, sans-serif;
-}
-
-line {
-	stroke: silver;
-	stroke-linecap:butt;
-	stroke-width:1px;
-}
-
-line.processConnection {
-	stroke-width:0.2px;
-}
-
-#recipeName {
-	font-size: 12px;
-}
-
-
-#process {
-	fill: white; 
-	stroke: silver;
-  	stroke-width: 1px;
-}
-
-#startProcess,
-#endProcess {
-	fill: silver;	
-}
-
-#timeProcess {
-	fill: silver; 
-	transform: scale(1.8);
-}
-
-#components {
-	fill: white; 
-	stroke: LightGray;
-  	stroke-width: 0.2px;
-
-}
-
-.instruction .method{ 
-	font-size: 12px;
-	font-weight: 500;
-}
-
-.instruction .direction {
-	color: LightGray;
-}
-
-.componentUnit {
-	width: 200px; 
-	height:400px;
-	font-size: 10px;
-}
-
-.weight,
-.addition {
-	font-weight: 100;
-	fill: #f32853;
-}
-
-.ingredient {
-	font-weight: 500;
-}
-
-.fork {
-  	stroke-width: 4px;	
-  	stroke-linecap: round;
-}
-
-.descriptionConnection {
-	stroke-dasharray: 3;
-	stroke-dashoffset: 3;
-}	
+				@font-face {
+				  font-family:HelveticaLight;
+				  src: local("Helvetica Neue Light"),
+				       local("HelveticaNeue-Light"),
+				       url(helveticaneue-light-001.ttf);
+				}
+				
+				svg {
+					width:100vw; 
+					height:100vh; 
+				}
+				
+				text {
+					fill: DimGray;
+					font-weight: 300;
+					font-size: 11px;
+					font-family: HelveticaLight, sans-serif;
+				}
+				
+				line {
+					stroke: silver;
+					stroke-linecap:butt;
+					stroke-width:1px;
+				}
+				
+				line.processConnection {
+					stroke-width:0.2px;
+				}
+				
+				#recipeName {
+					font-size: 12px;
+				}
+				
+				
+				#process {
+					fill: white; 
+					stroke: silver;
+				  	stroke-width: 1px;
+				}
+				
+				#startProcess,
+				#endProcess {
+					fill: silver;	
+				}
+				
+				#timeProcess {
+					fill: silver; 
+					transform: scale(1.8);
+				}
+				
+				#components {
+					fill: white; 
+					stroke: LightGray;
+				  	stroke-width: 0.2px;
+				
+				}
+				
+				.instruction .method{ 
+					font-size: 12px;
+					font-weight: 500;
+				}
+				
+				.instruction .direction {
+					color: LightGray;
+				}
+				
+				.componentUnit {
+					width: 200px; 
+					height:400px;
+					font-size: 10px;
+				}
+				
+				.weight,
+				.addition {
+					font-weight: 100;
+					fill: #f32853;
+				}	
+				.ingredient {
+					font-weight: 500;
+				}
+				
+				.fork {
+				  	stroke-width: 4px;	
+				  	stroke-linecap: round;
+				}
+				.descriptionConnection {
+					stroke-dasharray: 3;
+					stroke-dashoffset: 3;
+				}	
 			]]></style>
 
 			<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
